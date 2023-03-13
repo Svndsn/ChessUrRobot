@@ -1,12 +1,5 @@
 #include <iostream>
 #include <string>
-#include <sstream>
-#include <cstring>
-#include <cstdio>
-#include <cstdlib>
-#include <ctime>
-#include <unistd.h>
-#include <errno.h>
 #include "src/ChessEngine.h"
 
 #define PIPE_READ 0
@@ -18,7 +11,7 @@ int main()
 {
     // Start the engine process
 	ChessEngine sf;
-    sf.startEngine("./stockfish-ubuntu-20.04-x86-64");
+    sf.startEngine("stockfish/stockfish-ubuntu-20.04-x86-64");
 
     // Send the UCI commands to initialize the engine
     sf.readResponse(); // Read init line printed
