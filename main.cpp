@@ -13,12 +13,6 @@
 
 using namespace std;
 
-/* 	
-	This application needs to be in the folder of the engine
-	the startProcess(%%) function is hard to get working 
-	if the targeted process is not in the same folder
-*/
-
 string board = "position startpos moves";
 
 struct process {
