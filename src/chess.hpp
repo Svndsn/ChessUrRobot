@@ -5,17 +5,17 @@
 class Chess
 {
 private:
-    Modbus &ur;
-    Modbus *at;
     ChessEngine sf;
+    Modbus ur5;
+
     int * parseMove(std::string coordinate);
 public:
-    Chess(Modbus &in);
+    Chess(string path, const char* ip);
     void urMove();
     void userMove(std::string coordinates);
 };
 
-Chess::Chess(Modbus &in):ur(in)
+Chess::Chess(string path, const char* ip) : sf(path), ur5(ip)
 {
 
 }

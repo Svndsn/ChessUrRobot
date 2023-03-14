@@ -1,4 +1,3 @@
-#pragma once
 #include "modbus.hpp"
 #include "chess.hpp"
 #include <stdio.h>
