@@ -24,7 +24,7 @@ private:
 public:
     ChessEngine(string fileName);
     ~ChessEngine();
-    void getUserMove(string move);
+    void sendUserMove(string move);
     bool readGameover();
     string getEngineMove();
 };

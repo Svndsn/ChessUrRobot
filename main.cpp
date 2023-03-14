@@ -5,7 +5,7 @@
 #define PIPE_READ 0
 #define PIPE_WRITE 1
 
-usig namespace std;
+using namespace std;
 
 int main()
 {

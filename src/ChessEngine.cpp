@@ -124,10 +124,6 @@ bool ChessEngine::readGameover() {
     return gameover;
 }
 
-string ChessEngine::readTurn() {
-    return turn;
-}
-
 ChessEngine::ChessEngine(string fileName)
 {
 	startEngine(fileName);
