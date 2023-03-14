@@ -16,74 +16,72 @@ using namespace std;
 
 void ChessEngine::startEngine(string fileName) {
     int infd[2];
-	int outfd[2];
-	int nChild;
-	int nResult;
-	if (pipe(infd) < 0) {
-		perror("allocating pipe for child input redirect");
-		exit(1);
-	}
-	if (pipe(outfd) < 0) {
-		close(infd[PIPE_READ]);
-		close(infd[PIPE_WRITE]);
-		perror("allocating pipe for child output redirect");
-		exit(1);
-	}
+    int outfd[2];
+    int nChild;
+    int nResult;
 
-	nChild = fork();
-	if (0 == nChild) {
-		// child continues here
+    // Create input and output pipes
+    if (pipe(infd) < 0) {
+        perror("allocating pipe for child input redirect");
+        exit(1);
+    }
+    if (pipe(outfd) < 0) {
+        close(infd[PIPE_READ]);
+        close(infd[PIPE_WRITE]);
+        perror("allocating pipe for child output redirect");
+        exit(1);
+    }
 
-		// redirect stdin
-		if (dup2(infd[PIPE_READ], STDIN_FILENO) == -1) {
-			exit(errno);
-		}
+    // Fork a child process
+    nChild = fork();
+    if (nChild == -1) {
+        // Error creating child process
+        perror("fork");
+        exit(1);
+    } else if (nChild == 0) {
+        // Child process
+        close(infd[PIPE_WRITE]);
+        close(outfd[PIPE_READ]);
 
-		// redirect stdout
-		if (dup2(outfd[PIPE_WRITE], STDOUT_FILENO) == -1) {
-			exit(errno);
-		}
+        // Redirect standard input, output, and error to pipes
+        if (dup2(infd[PIPE_READ], STDIN_FILENO) == -1) {
+            perror("dup2 stdin");
+            exit(1);
+        }
+        if (dup2(outfd[PIPE_WRITE], STDOUT_FILENO) == -1) {
+            perror("dup2 stdout");
+            exit(1);
+        }
+        if (dup2(outfd[PIPE_WRITE], STDERR_FILENO) == -1) {
+            perror("dup2 stderr");
+            exit(1);
+        }
 
-		// redirect stderr
-		if (dup2(outfd[PIPE_WRITE], STDERR_FILENO) == -1) {
-			exit(errno);
-		}
+        // Close unused pipe ends
+        close(infd[PIPE_READ]);
+        close(outfd[PIPE_WRITE]);
 
-		// all these are for use by parent only
-		close(infd[PIPE_READ]);
-		close(infd[PIPE_WRITE]);
-		close(outfd[PIPE_READ]);
-		close(outfd[PIPE_WRITE]); 
+        // Execute the chess engine program
+        char* argv[] = {const_cast<char*>(fileName.c_str()), NULL};
+        nResult = execve(fileName.c_str(), argv, NULL);
+        if (nResult == -1) {
+            perror("execve");
+            exit(1);
+        }
+    } else {
+        // Parent process
+        close(infd[PIPE_READ]);
+        close(outfd[PIPE_WRITE]);
 
-		// run child process image
-		// replace this with any exec* function find easier to use ("man exec")
-		nResult = execve(fileName.c_str(), NULL, NULL);
-
-		// if we get here at all, an error occurred, but we are in the child
-		// process, so just exit
-		exit(nResult);
-	} else if (nChild > 0) {
-		// parent continues here
-
-		// close unused file descriptors, these are for child only
-		close(infd[PIPE_READ]);
-		close(outfd[PIPE_WRITE]); 
-
-
-	} else {
-		// failed to create child
-		close(infd[PIPE_READ]);
-		close(infd[PIPE_WRITE]);
-		close(outfd[PIPE_READ]);
-		close(outfd[PIPE_WRITE]);
-	}
-	//return NULL;
-	process* proc = new process;
-	proc->pid = nChild;
-	proc->infd = infd[PIPE_WRITE];
-	proc->outfd = outfd[PIPE_READ];
-	engineProcess = proc;
+        // Save process information
+        process* proc = new process;
+        proc->pid = nChild;
+        proc->infd = infd[PIPE_WRITE];
+        proc->outfd = outfd[PIPE_READ];
+        engineProcess = proc;
+    }
 }
+
 
 void ChessEngine::sendCommand(string command) {
     cout << "sending command: " << command << endl;
@@ -139,4 +137,8 @@ bool ChessEngine::readGameover() {
 
 string ChessEngine::readTurn() {
     return turn;
+}
+
+ChessEngine::ChessEngine()
+{
 }

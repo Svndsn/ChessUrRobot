@@ -18,7 +18,6 @@ private:
 
 public:
     ChessEngine();
-    ~ChessEngine();
     void startEngine(string fileName);
     void sendCommand(string command);
     string readResponse();

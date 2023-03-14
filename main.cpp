@@ -16,16 +16,16 @@ int main()
     // Send the UCI commands to initialize the engine
     sf.readResponse(); // Read init line printed
     sf.sendCommand("uci");
-	cout << 1 << endl;
+    cout << "1" << endl;
     sf.readResponse();
-	cout << 2 << endl;
+    cout << "2" << endl;
     sf.sendCommand("isready");
-	cout << 3 << endl;
+    cout << "3" << endl;
     sf.readResponse();
-	cout << 4 << endl;
+    cout << "4" << endl;
 
     // Play the game
-    while (sf.readGameover())
+    while (sf.readGameover()!=true)
     {
         if (sf.readTurn() == "white")
         {
