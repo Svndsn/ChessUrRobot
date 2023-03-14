@@ -1,13 +1,11 @@
-#include "modbus.hpp"
 #include "chess.hpp"
-#include "ChessEngine.h"
 #include <stdio.h>
 #include <iostream>
 using namespace std;
 int main()
 {
     
-    Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64","192.168.100.11");
+    Chess game("../Stockfish-master/src/stockfish","127.0.0.1","/dev/tty.usbserial-DK0AI63M",9600);//"../stockfish/stockfish-ubuntu-20.04-x86-64"
     
     
     while(!game.isGameOver()){
