@@ -102,27 +102,16 @@ string ChessEngine::readResponse()
 
 void ChessEngine::makeMove(string next_move)
 {
-    cout << "Making the move " << next_move << endl;
 	board += " " + next_move;
 	sendCommand(board);
 }
 
-string ChessEngine::getUserMove()
+void ChessEngine::sendUserMove(string move)
 {
-    string move;
-    cout << "Enter your move: ";
-    getline(cin, move);
-    return move;
-}
-
-void ChessEngine::changeTurn() {
-    if (turn=="white")
-    {
-        turn = "black";
-    } else {
-        turn = "white";
-    }
-    
+	makeMove(move);
+	sendCommand("go movetime 1000");
+	lastEngineMove = parseEngineResponse();
+	makeMove(lastEngineMove);
 }
 
 void ChessEngine::endProcess() {
@@ -139,6 +128,43 @@ string ChessEngine::readTurn() {
     return turn;
 }
 
-ChessEngine::ChessEngine()
+ChessEngine::ChessEngine(string fileName)
 {
+	startEngine(fileName);
+	sendCommand("uci");
+	sendCommand("isready");
+}
+
+string ChessEngine::parseEngineResponse()
+{
+	string response = readResponse();
+            if (response.substr(0, 8) == "bestmove")
+            {
+                size_t pos = response.find("bestmove ");
+                if (pos != string::npos && response.length() > pos + 9)
+                {
+                    string move = response.substr(pos + 9, 4);
+                    // Extract the actual move from the bestmove substring
+                    for (int i = 4; i < response.length() - (pos + 9); i++)
+                    {
+                        char c = response[pos + 9 + i];
+                        if (c == ' ' || c == '\r' || c == '\n')
+                        {
+                            break;
+                        }
+                        move += c;
+                    }
+					return move;
+                }
+            }
+}
+
+string ChessEngine::getEngineMove()
+{
+	return lastEngineMove;
+}
+
+ChessEngine::~ChessEngine()
+{
+	endProcess();
 }

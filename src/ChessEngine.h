@@ -12,19 +12,19 @@ struct process {
 class ChessEngine {
 private:
     process* engineProcess;
-    string turn = "white";
     bool gameover = false;
     string board = "position startpos moves";
-
-public:
-    ChessEngine();
     void startEngine(string fileName);
+    string lastEngineMove;
     void sendCommand(string command);
-    string readResponse();
     void makeMove(string next_move);
-    string getUserMove();
-    void changeTurn();
+    string readResponse();
     void endProcess();
+    string parseEngineResponse();
+public:
+    ChessEngine(string fileName);
+    ~ChessEngine();
+    void getUserMove(string move);
     bool readGameover();
-    string readTurn();
+    string getEngineMove();
 };
