@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include "modbus/modbus.h"
 class Modbus

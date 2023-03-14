@@ -1,17 +1,22 @@
 #include "modbus.hpp"
 #include "chess.hpp"
+#include "ChessEngine.h"
 #include <stdio.h>
 #include <iostream>
-
+using namespace std;
 int main()
 {
-    Modbus ur("127.0.0.1");
-    Chess game(ur);
-    game.userMove("e2e4");
     
-    while(1){//game not over
-        //chess.getNextMove()
-        //parse move into array[4]
+    Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64","192.168.100.11");
+    
+    
+    while(!game.isGameOver()){
+        string move;
+        cout << "Enter your move: " << endl;
+        getline(cin,move);
+        game.userMove(move);
+        game.urMove();
+        
         
 
         
