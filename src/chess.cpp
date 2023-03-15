@@ -13,6 +13,7 @@ void Chess::urMove()
     bool kill;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
     sf.makeMove(nextEngineMove);
+    sf.getFen();
     if (kill)
     {
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
@@ -26,8 +27,7 @@ void Chess::urMove()
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         // assert(ur.readWhenChanged(128) == 0);
         //where to drop?
-        ur.makeMove(9, 9, 2); // input default pos
-        // assert(ur.readWhenChanged(128) == 0);
+        
     }
     
     
