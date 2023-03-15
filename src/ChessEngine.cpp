@@ -128,10 +128,9 @@ bool ChessEngine::readGameover() {
 
 ChessEngine::ChessEngine(string fileName)
 {
-	startEngine(fileName);
-	sendCommand("uci");
+    startEngine(fileName);
     readResponse();
-	sendCommand("isready");
+    sendCommand("isready");
     readResponse();
     
     
@@ -139,26 +138,20 @@ ChessEngine::ChessEngine(string fileName)
 
 string ChessEngine::parseEngineResponse()
 {
-	string response = readResponse();
-            if (response.substr(0, 8) == "bestmove")
-            {
-                size_t pos = response.find("bestmove ");
-                if (pos != string::npos && response.length() > pos + 9)
-                {
-                    string move = response.substr(pos + 9, 4);
-                    // Extract the actual move from the bestmove substring
-                    for (int i = 4; i < response.length() - (pos + 9); i++)
-                    {
-                        char c = response[pos + 9 + i];
-                        if (c == ' ' || c == '\r' || c == '\n')
-                        {
-                            break;
-                        }
-                        move += c;
-                    }
-					return move;
-                }
-            }
+    string move;
+    while (1)
+    {
+        string response = readResponse();
+        size_t bestmoveAt = response.find("bestmove");
+        if (bestmoveAt != string::npos)
+        {
+            string test2 = response.substr(bestmoveAt-1, bestmoveAt+7);
+            int end = test2.find("ponder")-11;
+            move = test2.substr(10,end);
+            break;
+        }
+    }
+    return move;
 }
 
 string ChessEngine::getEngineMove()
