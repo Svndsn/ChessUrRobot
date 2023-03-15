@@ -14,18 +14,21 @@ using namespace std;
 #define PIPE_READ 0
 #define PIPE_WRITE 1
 
-void ChessEngine::startEngine(string fileName) {
+void ChessEngine::startEngine(string fileName)
+{
     int infd[2];
     int outfd[2];
     int nChild;
     int nResult;
 
     // Create input and output pipes
-    if (pipe(infd) < 0) {
+    if (pipe(infd) < 0)
+    {
         perror("allocating pipe for child input redirect");
         exit(1);
     }
-    if (pipe(outfd) < 0) {
+    if (pipe(outfd) < 0)
+    {
         close(infd[PIPE_READ]);
         close(infd[PIPE_WRITE]);
         perror("allocating pipe for child output redirect");
@@ -34,25 +37,31 @@ void ChessEngine::startEngine(string fileName) {
 
     // Fork a child process
     nChild = fork();
-    if (nChild == -1) {
+    if (nChild == -1)
+    {
         // Error creating child process
         perror("fork");
         exit(1);
-    } else if (nChild == 0) {
+    }
+    else if (nChild == 0)
+    {
         // Child process
         close(infd[PIPE_WRITE]);
         close(outfd[PIPE_READ]);
 
         // Redirect standard input, output, and error to pipes
-        if (dup2(infd[PIPE_READ], STDIN_FILENO) == -1) {
+        if (dup2(infd[PIPE_READ], STDIN_FILENO) == -1)
+        {
             perror("dup2 stdin");
             exit(1);
         }
-        if (dup2(outfd[PIPE_WRITE], STDOUT_FILENO) == -1) {
+        if (dup2(outfd[PIPE_WRITE], STDOUT_FILENO) == -1)
+        {
             perror("dup2 stdout");
             exit(1);
         }
-        if (dup2(outfd[PIPE_WRITE], STDERR_FILENO) == -1) {
+        if (dup2(outfd[PIPE_WRITE], STDERR_FILENO) == -1)
+        {
             perror("dup2 stderr");
             exit(1);
         }
@@ -62,19 +71,22 @@ void ChessEngine::startEngine(string fileName) {
         close(outfd[PIPE_WRITE]);
 
         // Execute the chess engine program
-        char* argv[] = {const_cast<char*>(fileName.c_str()), NULL};
+        char *argv[] = {const_cast<char *>(fileName.c_str()), NULL};
         nResult = execve(fileName.c_str(), argv, NULL);
-        if (nResult == -1) {
+        if (nResult == -1)
+        {
             perror("execve");
             exit(1);
         }
-    } else {
+    }
+    else
+    {
         // Parent process
         close(infd[PIPE_READ]);
         close(outfd[PIPE_WRITE]);
 
         // Save process information
-        process* proc = new process;
+        process *proc = new process;
         proc->pid = nChild;
         proc->infd = infd[PIPE_WRITE];
         proc->outfd = outfd[PIPE_READ];
@@ -82,47 +94,48 @@ void ChessEngine::startEngine(string fileName) {
     }
 }
 
-
-void ChessEngine::sendCommand(string command) {
+void ChessEngine::sendCommand(string command)
+{
     cout << "sending command: " << command << endl;
-	cout.flush();
-	//fprintf(engineProcess->infd, "%s\n", command.c_str());
-	write(engineProcess->infd, command.c_str(), command.length());
-	write(engineProcess->infd, "\n", 1);
-
+    cout.flush();
+    // fprintf(engineProcess->infd, "%s\n", command.c_str());
+    write(engineProcess->infd, command.c_str(), command.length());
+    write(engineProcess->infd, "\n", 1);
 }
 
 string ChessEngine::readResponse()
 {
-	char buffer[4096] = {0};
-	int resp_len = read(engineProcess->outfd,buffer, sizeof(buffer));
-	string response(buffer, resp_len);
-	cout << "received response: " << response << endl;
+    char buffer[4096] = {0};
+    int resp_len = read(engineProcess->outfd, buffer, sizeof(buffer));
+    string response(buffer, resp_len);
+    cout << "received response: " << response << endl;
     return response;
 }
 
 void ChessEngine::makeMove(string next_move)
 {
-	board += " " + next_move;
-	sendCommand(board);
+    board += " " + next_move;
+    sendCommand(board);
 }
 
 void ChessEngine::sendUserMove(string move)
 {
-	makeMove(move);
+    makeMove(move);
     cout << "here2";
-	sendCommand("go movetime 1000");
-	lastEngineMove = parseEngineResponse();
-	makeMove(lastEngineMove);
+    sendCommand("go movetime 1000");
+    lastEngineMove = parseEngineResponse();
+    makeMove(lastEngineMove);
 }
 
-void ChessEngine::endProcess() {
-	close(engineProcess->infd);
-	close(engineProcess->outfd);
-	delete engineProcess;
+void ChessEngine::endProcess()
+{
+    close(engineProcess->infd);
+    close(engineProcess->outfd);
+    delete engineProcess;
 }
 
-bool ChessEngine::readGameover() {
+bool ChessEngine::readGameover()
+{
     return gameover;
 }
 
@@ -132,8 +145,6 @@ ChessEngine::ChessEngine(string fileName)
     readResponse();
     sendCommand("isready");
     readResponse();
-    
-    
 }
 
 string ChessEngine::parseEngineResponse()
@@ -145,9 +156,9 @@ string ChessEngine::parseEngineResponse()
         size_t bestmoveAt = response.find("bestmove");
         if (bestmoveAt != string::npos)
         {
-            string test2 = response.substr(bestmoveAt-1, bestmoveAt+7);
-            int end = test2.find("ponder")-11;
-            move = test2.substr(10,end);
+            string test2 = response.substr(bestmoveAt - 1, bestmoveAt + 7);
+            int end = test2.find("ponder") - 11;
+            move = test2.substr(10, end);
             break;
         }
     }
@@ -156,12 +167,23 @@ string ChessEngine::parseEngineResponse()
 
 string ChessEngine::getEngineMove()
 {
-	return lastEngineMove;
+    return lastEngineMove;
 }
 
 ChessEngine::~ChessEngine()
 {
-	endProcess();
+    endProcess();
 }
 
-ChessEngine::ChessEngine(){}
+ChessEngine::ChessEngine() {}
+
+string ChessEngine::getFen()
+{
+    string fen;
+    sendCommand("d");
+    string response = readResponse();
+    int start = response.find("Fen: ")+5;
+    int stop = response.find(" ",start) - start;
+    cout << response.substr(start,stop) << endl;
+    return fen;
+}

@@ -28,6 +28,5 @@ public:
     void sendUserMove(string move);
     bool readGameover();
     string getEngineMove();
-
-
+    string getFen();
 };
