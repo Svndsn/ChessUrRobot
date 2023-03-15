@@ -156,9 +156,9 @@ string ChessEngine::parseEngineResponse()
         size_t bestmoveAt = response.find("bestmove");
         if (bestmoveAt != string::npos)
         {
-            string test2 = response.substr(bestmoveAt - 1, bestmoveAt + 7);
-            int end = test2.find("ponder") - 11;
-            move = test2.substr(10, end);
+            string bestmoveString = response.substr(bestmoveAt - 1, bestmoveAt + 7);
+            int end = bestmoveString.find("ponder") - 11;
+            move = bestmoveString.substr(10, end);
             break;
         }
     }
