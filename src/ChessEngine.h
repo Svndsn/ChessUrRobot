@@ -15,6 +15,12 @@ private:
     bool gameover = false;
     string board = "position startpos moves";
     string lastEngineMove;
+    string readResponse();
+    void sendCommand(string command);
+    void makeMove(string next_move);
+    void endProcess();
+    string parseEngineResponse();
+    void startEngine(string fileName);
 public:
     ChessEngine(string fileName);
     ChessEngine();
@@ -23,10 +29,5 @@ public:
     bool readGameover();
     string getEngineMove();
 
-    string readResponse();
-    void sendCommand(string command);
-    void makeMove(string next_move);
-    void endProcess();
-    string parseEngineResponse();
-    void startEngine(string fileName);
+
 };
