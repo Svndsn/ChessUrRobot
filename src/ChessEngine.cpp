@@ -129,6 +129,7 @@ ChessEngine::ChessEngine(string fileName)
 	startEngine(fileName);
 	sendCommand("uci");
 	sendCommand("isready");
+    //readResponse();
 }
 
 string ChessEngine::parseEngineResponse()

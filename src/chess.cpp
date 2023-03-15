@@ -1,12 +1,15 @@
 #include "chess.hpp"
 #include <assert.h>
-Chess::Chess(string path, const char* ip) : sf(path), ur(ip)
+#include <iostream>
+Chess::Chess(string path, const char* ip,const char *device,int baud):sf(path), ur(ip),at(device,baud)
 {
 
 }
 
 void Chess::urMove(){
+    std::cout<<"here"<<std::endl;
     int * coordArray = parseMove(sf.getEngineMove());
+    
     ur.makeMove(coordArray[0],coordArray[1],1);//input first 2 from array and z=1
     assert(ur.readWhenChanged(128) == 0);
     ur.makeMove(coordArray[0],coordArray[1], 0); // same input but z=0
