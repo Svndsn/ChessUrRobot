@@ -14,17 +14,19 @@ private:
     process* engineProcess;
     bool gameover = false;
     string board = "position startpos moves";
-    void startEngine(string fileName);
     string lastEngineMove;
-    void sendCommand(string command);
-    void makeMove(string next_move);
-    string readResponse();
-    void endProcess();
-    string parseEngineResponse();
 public:
     ChessEngine(string fileName);
+    ChessEngine();
     ~ChessEngine();
     void sendUserMove(string move);
     bool readGameover();
     string getEngineMove();
+
+    string readResponse();
+    void sendCommand(string command);
+    void makeMove(string next_move);
+    void endProcess();
+    string parseEngineResponse();
+    void startEngine(string fileName);
 };

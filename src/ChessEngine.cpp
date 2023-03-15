@@ -89,6 +89,7 @@ void ChessEngine::sendCommand(string command) {
 	//fprintf(engineProcess->infd, "%s\n", command.c_str());
 	write(engineProcess->infd, command.c_str(), command.length());
 	write(engineProcess->infd, "\n", 1);
+
 }
 
 string ChessEngine::readResponse()
@@ -109,6 +110,7 @@ void ChessEngine::makeMove(string next_move)
 void ChessEngine::sendUserMove(string move)
 {
 	makeMove(move);
+    cout << "here2";
 	sendCommand("go movetime 1000");
 	lastEngineMove = parseEngineResponse();
 	makeMove(lastEngineMove);
@@ -128,8 +130,11 @@ ChessEngine::ChessEngine(string fileName)
 {
 	startEngine(fileName);
 	sendCommand("uci");
+    readResponse();
 	sendCommand("isready");
-    //readResponse();
+    readResponse();
+    
+    
 }
 
 string ChessEngine::parseEngineResponse()
@@ -165,3 +170,5 @@ ChessEngine::~ChessEngine()
 {
 	endProcess();
 }
+
+ChessEngine::ChessEngine(){}
