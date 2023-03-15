@@ -29,4 +29,5 @@ public:
     bool readGameover();
     string getEngineMove();
     string getFen();
+    bool doesMoveKill(const string &fen, const string &move_str);
 };

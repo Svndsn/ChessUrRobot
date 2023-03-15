@@ -7,6 +7,7 @@
 #include <ctime>
 #include <unistd.h>
 #include <errno.h>
+#include <vector>
 #include "ChessEngine.h"
 
 using namespace std;
@@ -186,4 +187,54 @@ string ChessEngine::getFen()
     int stop = response.find(" ",start) - start;
     cout << response.substr(start,stop) << endl;
     return fen;
+}
+
+bool ChessEngine::doesMoveKill(const string &fen, const string &move_str)
+{
+    // Split the FEN string into its components
+    std::vector<std::string> fen_components;
+    std::string component;
+    for (char c : fen)
+    {
+        if (c == ' ')
+        {
+            fen_components.push_back(component);
+            component = "";
+        }
+        else
+        {
+            component += c;
+        }
+    }
+    fen_components.push_back(component);
+
+    // Get the current board position
+    std::string position = fen_components[0];
+
+    // Apply the move to the board position
+    int from_file = move_str[0] - 'a';
+    int from_rank = 8 - (move_str[1] - '0');
+    int to_file = move_str[2] - 'a';
+    int to_rank = 8 - (move_str[3] - '0');
+    int from_square = from_rank * 8 + from_file;
+    int to_square = to_rank * 8 + to_file;
+    char piece = position[from_square];
+    position[from_square] = ' ';
+    position[to_square] = piece;
+
+    // Check if a piece was captured
+    bool piece_captured = false;
+    for (size_t i = 0; i < position.size(); ++i)
+    {
+        if (position[i] != fen_components[0][i])
+        {
+            // Check if a piece is missing in the new position
+            if (position[i] == ' ')
+            {
+                piece_captured = true;
+                break;
+            }
+        }
+    }
+    return piece_captured;
 }
