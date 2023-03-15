@@ -15,4 +15,5 @@ public:
     void urMove();
     void userMove(std::string coordinates);
     bool isGameOver();
+    bool moveIsKill(std::string fen, int movex, int movey);
 };

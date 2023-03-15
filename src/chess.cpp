@@ -1,6 +1,7 @@
 #include "chess.hpp"
 #include <assert.h>
 #include <iostream>
+#include <vector>
 Chess::Chess(string path, const char* ip,const char *device,int baud):sf(path), ur(ip),at(device,baud)
 {
 
@@ -46,4 +47,29 @@ void Chess::userMove(std::string coordinates){
 
 bool Chess::isGameOver(){
     return sf.readGameover();
+}
+
+bool Chess::moveIsKill(std::string fen, int movex, int movey){
+    
+    int pos=0;
+    int posend;
+    for(int i=0; i<7-movey;i++){
+        pos = fen.find('/',pos);
+        posend = fen.find('/',pos);
+    }
+    std::string row =fen.substr(pos+1,posend-1);
+    std::vector<int> xPos; 
+    for(int i=0;i<row.length();i++){
+        if(row[i]>47 || row[i]<58){
+            for(int j=0;j<row[i]-48;j++){
+                xPos.push_back(0);
+            }
+        } else
+        {
+            xPos.push_back(1);
+        }
+        
+    }
+    return (bool) xPos[movex];
+
 }
