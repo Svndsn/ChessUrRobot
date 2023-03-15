@@ -17,7 +17,6 @@ private:
     string lastEngineMove;
     string readResponse();
     void sendCommand(string command);
-    void makeMove(string next_move);
     void endProcess();
     string parseEngineResponse();
     void startEngine(string fileName);
@@ -25,9 +24,9 @@ public:
     ChessEngine(string fileName);
     ChessEngine();
     ~ChessEngine();
-    void sendUserMove(string move);
+    string sendUserMove(string move);
     bool readGameover();
-    string getEngineMove();
     string getFen();
+    void makeMove(string next_move);
     bool doesMoveKill(const string &fen, const string &move_str);
 };

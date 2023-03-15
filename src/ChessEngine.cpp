@@ -119,13 +119,12 @@ void ChessEngine::makeMove(string next_move)
     sendCommand(board);
 }
 
-void ChessEngine::sendUserMove(string move)
+string ChessEngine::sendUserMove(string move)
 {
     makeMove(move);
-    cout << "here2";
     sendCommand("go movetime 1000");
-    lastEngineMove = parseEngineResponse();
-    makeMove(lastEngineMove);
+    return parseEngineResponse();
+    
 }
 
 void ChessEngine::endProcess()
@@ -166,10 +165,6 @@ string ChessEngine::parseEngineResponse()
     return move;
 }
 
-string ChessEngine::getEngineMove()
-{
-    return lastEngineMove;
-}
 
 ChessEngine::~ChessEngine()
 {
@@ -180,13 +175,11 @@ ChessEngine::ChessEngine() {}
 
 string ChessEngine::getFen()
 {
-    string fen;
     sendCommand("d");
     string response = readResponse();
     int start = response.find("Fen: ")+5;
     int stop = response.find(" ",start) - start;
-    cout << response.substr(start,stop) << endl;
-    return fen;
+    return response.substr(start,stop);
 }
 
 bool ChessEngine::doesMoveKill(const string &fen, const string &move_str)
