@@ -1,3 +1,4 @@
-1. Add stockfish files to the gitignore
-2. Make a lot of the methods private in the ChessEngine class
-3. Make it interface with the MODBUS interface
+1. Make it interface with the MODBUS ATMEGA interface
+2. Add Overleaf to git?
+3. Test the UR script and make sure the robot can move to specific points
+4. Find the standard of a chess board and make an array using the measurements
