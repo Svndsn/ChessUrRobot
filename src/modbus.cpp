@@ -8,7 +8,12 @@ Modbus::Modbus(const char *ip){
     }
 }
 Modbus::Modbus(const char *device, int baud){
-
+    ctx = modbus_new_rtu(device,baud,'N',8,1);
+    if (modbus_connect(ctx) == -1)
+    {
+        fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
+        modbus_free(ctx);
+    }
 }
 Modbus::~Modbus(){
     modbus_close(ctx);
