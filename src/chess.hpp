@@ -11,7 +11,7 @@ private:
     std::string nextEngineMove;
     int * parseMove(std::string coordinate);
 public:
-    Chess(string path, const char* ip,const char* device,int baud);
+    Chess(string path, const char* ip,const char* device,int slave_id);
     void urMove();
     void userMove(std::string coordinates);
     bool isGameOver();

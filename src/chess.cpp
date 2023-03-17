@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <iostream>
 #include <vector>
-Chess::Chess(string path, const char* ip,const char *device,int baud):sf(path), ur(ip),at(device,baud)
+Chess::Chess(string path, const char* ip,const char *device,int slave_id):sf(path), ur(ip),at(device,slave_id)
 {
 
 }

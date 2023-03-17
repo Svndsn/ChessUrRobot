@@ -8,7 +8,7 @@ private:
     uint16_t tab_reg[32];
 public:
     Modbus(const char *ip);
-    Modbus(const char *device, int baud);
+    Modbus(const char *device, int slave_id);
     ~Modbus();
     void write(int reg, int val);
     int read(int reg);

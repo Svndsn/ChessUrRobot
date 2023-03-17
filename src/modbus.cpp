@@ -1,17 +1,28 @@
 #include "modbus.hpp"
 Modbus::Modbus(const char *ip){
     ctx = modbus_new_tcp(ip, 502);
+    if (ctx == NULL) {
+        fprintf(stderr, "Unable to create the libmodbus context\n");
+    }
     if (modbus_connect(ctx) == -1)
     {
         fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
         modbus_free(ctx);
     }
 }
-Modbus::Modbus(const char *device, int baud){
-    ctx = modbus_new_rtu(device,baud,'N',8,1);
+Modbus::Modbus(const char *device, int slave_id){
+    ctx = modbus_new_rtu(device,38400,'N',8,1);
+    if (ctx == NULL) {
+        fprintf(stderr, "Unable to create the libmodbus context\n");
+    }
     if (modbus_connect(ctx) == -1)
     {
         fprintf(stderr, "Connection failed: %s\n", modbus_strerror(errno));
+        modbus_free(ctx);
+    }
+    int rc = modbus_set_slave(ctx,slave_id);
+    if (rc == -1) {
+        fprintf(stderr, "Invalid slave ID\n");
         modbus_free(ctx);
     }
 }
