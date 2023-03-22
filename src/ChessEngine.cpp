@@ -136,6 +136,25 @@ void ChessEngine::endProcess()
 
 bool ChessEngine::readGameover()
 {
+    sendCommand("go movetime 100");
+    while (true)
+    {
+        string response = readResponse();
+        size_t buff = response.find("bestmove");
+        if (buff != string::npos)
+        {
+            string buffGameover = response.substr(buff - 1, buff + 7);
+            if (buffGameover.substr(10,6)=="(none)")
+            {
+                gameover = true;
+            } else {
+                gameover = false;
+            }
+            
+        }
+        
+    }
+    
     return gameover;
 }
 
@@ -150,7 +169,7 @@ ChessEngine::ChessEngine(string fileName)
 string ChessEngine::parseEngineResponse()
 {
     string move;
-    while (1)
+    while (true)
     {
         string response = readResponse();
         size_t bestmoveAt = response.find("bestmove");
