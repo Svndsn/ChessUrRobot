@@ -34,7 +34,7 @@
 
 
 /* ----------------------- Defines ------------------------------------------*/
-#define REG_INPUT_START 1000
+#define REG_INPUT_START 0
 #define REG_INPUT_NREGS 4
 
 
@@ -44,23 +44,26 @@ static USHORT usRegInputBuf[REG_INPUT_NREGS];
 
 /* ----------------------- Start implementation -----------------------------*/
 int main(void) {
-	DDRD |= (1 << DDD4);
+	DDRD |= (1 << DDD5);
 	DDRC |= (1 << DDC2);
 
+
+	
 	const UCHAR ucSlaveID[] = { 0xAA, 0xBB, 0xCC };
 	eMBErrorCode eStatus;
 
-	eStatus = eMBInit(MB_RTU, 0x0A, 0, 38400, MB_PAR_NONE);
+	eStatus = eMBInit(MB_RTU, 0x0A, 0, 9600, MB_PAR_NONE);
 
 	eStatus = eMBSetSlaveID(0x34, TRUE, ucSlaveID, 3);
 	sei( );
 
 	/* Enable the Modbus Protocol Stack. */
 	eStatus = eMBEnable();
+	
 
 	for (;;) {
 		(void) eMBPoll();
-
+		
 		/* Here we simply count the number of poll cycles. */
 		usRegInputBuf[0]++;
 	}
@@ -94,7 +97,7 @@ uint16_t holding[100];
 
 eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode) {
 	uint16_t i;
-
+	grip();
 	if (usAddress < 1000 || usAddress + (usNRegs - 1) > 1099) return MB_ENOREG;
 	usAddress -= 1000;
 

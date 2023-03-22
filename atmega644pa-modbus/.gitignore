@@ -20,4 +20,11 @@ local.properties
 *.o
 *.lst
 *.pdf
-
+*.map
+*.lss
+*.eep
+*.elf
+*.hex
+*.o
+*.sym
+*.lst

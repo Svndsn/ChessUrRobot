@@ -37,31 +37,31 @@
 #include "mb.h"
 #include "mbport.h"
 
-#define BAUD 38400
+#define BAUD 9600
 #include <util/setbaud.h>
 
 //#define UART_UCSRB  UCSR0B
 
 void vMBPortSerialEnable(BOOL xRxEnable, BOOL xTxEnable) {
 #ifdef RTS_ENABLE
-	UCSR0B |= _BV( TXEN0 ) | _BV(TXCIE0);
+	UCSR1B |= _BV( TXEN1 ) | _BV(TXCIE1);
 #else
-	UCSR0B |= _BV(TXEN0);
+	UCSR1B |= _BV(TXEN1);
 #endif
 
 	if (xRxEnable) {
-		UCSR0B |= _BV( RXEN0 ) | _BV(RXCIE0);
+		UCSR1B |= _BV( RXEN1 ) | _BV(RXCIE1);
 	} else {
-		UCSR0B &= ~( _BV( RXEN0 ) | _BV(RXCIE0));
+		UCSR1B &= ~( _BV( RXEN1 ) | _BV(RXCIE1));
 	}
 
 	if (xTxEnable) {
-		UCSR0B |= _BV( TXEN0 ) | _BV(UDRIE0);
+		UCSR1B |= _BV( TXEN1 ) | _BV(UDRIE1);
 #ifdef RTS_ENABLE
 		RTS_HIGH;
 #endif
 	} else {
-		UCSR0B &= ~(_BV(UDRIE0));
+		UCSR1B &= ~(_BV(UDRIE1));
 	}
 }
 
@@ -72,21 +72,21 @@ BOOL xMBPortSerialInit(UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBPari
 	(void) ucPORT;
 
 	// set computed value by util/setbaud.h
-	UBRR0H = UBRRH_VALUE;
-	UBRR0L = UBRRL_VALUE;
+	UBRR1H = UBRRH_VALUE;
+	UBRR1L = UBRRL_VALUE;
 
 #if USE_2X
-	UCSR0A |= (1<<U2X0);
+	UCSR1A |= (1<<U2X1);
 #else
-	UCSR0A &= ~(1 << U2X0);
+	UCSR1A &= ~(1 << U2X1);
 #endif
 
 	switch (eParity) {
 	case MB_PAR_EVEN:
-		ucUCSRC |= _BV(UPM01);
+		ucUCSRC |= _BV(UPM11);
 		break;
 	case MB_PAR_ODD:
-		ucUCSRC |= _BV( UPM01 ) | _BV(UPM00);
+		ucUCSRC |= _BV( UPM11 ) | _BV(UPM10);
 		break;
 	case MB_PAR_NONE:
 		break;
@@ -94,14 +94,14 @@ BOOL xMBPortSerialInit(UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBPari
 
 	switch (ucDataBits) {
 	case 8:
-		ucUCSRC |= _BV( UCSZ00 ) | _BV(UCSZ01);
+		ucUCSRC |= _BV( UCSZ10 ) | _BV(UCSZ11);
 		break;
 	case 7:
-		ucUCSRC |= _BV(UCSZ01);
+		ucUCSRC |= _BV(UCSZ11);
 		break;
 	}
 
-	UCSR0C |= ucUCSRC;
+	UCSR1C |= ucUCSRC;
 
 	vMBPortSerialEnable( FALSE, FALSE);
 
@@ -112,12 +112,12 @@ BOOL xMBPortSerialInit(UCHAR ucPORT, ULONG ulBaudRate, UCHAR ucDataBits, eMBPari
 }
 
 BOOL xMBPortSerialPutByte(CHAR ucByte) {
-	UDR0 = ucByte;
+	UDR1 = ucByte;
 	return TRUE;
 }
 
 BOOL xMBPortSerialGetByte(CHAR * pucByte) {
-	*pucByte = UDR0;
+	*pucByte = UDR1;
 	return TRUE;
 }
 
@@ -126,7 +126,7 @@ BOOL xMBPortSerialGetByte(CHAR * pucByte) {
  * interrupt generated when output buffer is empty
  * USART, UDR Empty Handle
  */
-ISR(USART_UDRE_vect) {
+ISR(USART1_UDRE_vect) {
 	pxMBFrameCBTransmitterEmpty();
 }
 
@@ -136,7 +136,7 @@ ISR(USART_UDRE_vect) {
  * received data stored in UDR
  * USART, RX Complete Handler
  */
-ISR(USART_RX_vect) {
+ISR(USART1_RX_vect) {
 	pxMBFrameCBByteReceived();
 }
 
