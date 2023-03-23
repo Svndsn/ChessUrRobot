@@ -61,19 +61,19 @@ typedef long    LONG;
 #endif
 
 /* ----------------------- AVR platform specifics ---------------------------*/
-#define UCSRB           UCSR1B
-#define UBRR            UBRR1L
-#define UDR             UDR1
+// #define UCSRB           UCSR1B
+// #define UBRR            UBRR1L
+// #define UDR             UDR1
 
 
-#define SIG_UART_TRANS  USART1_TX_vect
-#define SIG_USART_DATA  USART1_UDRE_vect
-#define SIG_USART_RECV  USART1_RX_vect
-#define UCSZ0           UCSZ00
-#define UCSZ1           UCSZ01
-#define UPM0            UPM00
-#define UPM1            UPM01
-#define UCSRC           UCSR1C
+// #define SIG_UART_TRANS  USART1_TX_vect
+// #define SIG_USART_DATA  USART1_UDRE_vect
+// #define SIG_USART_RECV  USART1_RX_vect
+// #define UCSZ0           UCSZ00
+// #define UCSZ1           UCSZ01
+// #define UPM0            UPM00
+// #define UPM1            UPM01
+// #define UCSRC           UCSR1C
 
 //#define SIG_USART_DATA  ISR( UART_RX_vect )
 //#define SIG_USART_RECV  ISR( UART_UDRE_vect )
@@ -93,6 +93,27 @@ typedef long    LONG;
 #define UCSZ1           UCSZ01
 #define UDR             UDR0
 #define SIG_UART_TRANS  SIG_USART_TRANS
+
+#elif defined (__AVR_ATmega644PA__)
+#define UCSRB           UCSR1B
+#define TXEN            TXEN1
+#define RXEN            RXEN1
+#define RXCIE           RXCIE1
+#define TXCIE           TXCIE1
+#define UDRE            UDRE1
+#define UBRR            UBRR1
+#define UCSRC           UCSR1C
+#define UPM1            UPM11
+#define UPM0            UPM10
+#define UCSZ0           UCSZ10
+#define UCSZ1           UCSZ11
+#define UDR             UDR1
+#define SIG_UART_TRANS  USART1_TX_vect
+#define SIG_UART_DATA  USART1_UDRE_vect
+#define SIG_UART_RECV  USART1_RX_vect
+#define SIG_USART_TRANS  USART1_TX_vect
+#define SIG_USART_DATA  USART1_UDRE_vect
+#define SIG_USART_RECV  USART1_RX_vect
 
 #elif defined (__AVR_ATmega169__)
 

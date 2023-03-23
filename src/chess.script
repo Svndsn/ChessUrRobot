@@ -14,7 +14,7 @@ def chess():
         z_var = read_port_register(131)
         pose = p[rows[row_var], columns[column_var], z[z_var], 0, -3, 0]
         if row_var==10:
-            columns[10]=columns[10]-30
+            columns[10]=columns[10]-0.1
         end
         movel(pose,1.2,0.25,0,0)
         write_port_register(128, 0)

@@ -36,7 +36,6 @@
 #include "mbport.h"
 
 /* ----------------------- Defines ------------------------------------------*/
-#define F_CPU (184320UL)
 #define MB_TIMER_PRESCALER      ( 1024UL )
 #define MB_TIMER_TICKS          ( F_CPU / MB_TIMER_PRESCALER )
 #define MB_50US_TICKS           ( 20000UL )
