@@ -7,6 +7,7 @@ private:
     modbus_t *ctx;
     uint16_t tab_reg[32];
 public:
+    Modbus(Modbus *in);
     Modbus(const char *ip);
     Modbus(const char *device, int slave_id);
     ~Modbus();

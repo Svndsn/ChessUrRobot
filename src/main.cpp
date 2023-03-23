@@ -4,13 +4,14 @@
 using namespace std;
 int main()
 {
+    Modbus *ur = new Modbus("192.168.100.100");
     #if defined(__linux__) // Or #if __linux__
-        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64","127.0.0.1","/dev/tty.usbserial-DK0AI63M",10);
+        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur);
     #elif _WIN32
         cout << "Won't work on windows" << endl;
         return 1;
     #else
-        Chess game("../Stockfish-master/src/stockfish", "192.168.100.11", "/dev/tty.usbserial-DK0AI63M", 1);
+        Chess game("../Stockfish-master/src/stockfish", ur);
     #endif
 
     while (1)
@@ -21,4 +22,7 @@ int main()
         game.userMove(move);
         game.urMove();
     }
+    
+
+
 }

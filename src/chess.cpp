@@ -2,17 +2,18 @@
 #include <assert.h>
 #include <iostream>
 #include <vector>
-Chess::Chess(string path, const char* ip,const char *device,int slave_id):sf(path), ur(ip),at(device,slave_id)
+Chess::Chess(string path, Modbus* in):sf(path),ur(*in)
 {
-
 }
 
 void Chess::urMove()
 {
     int *coordArray = parseMove(nextEngineMove);
-    bool kill;
+    bool kill=0;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
+    ur.write(128,1);
     sf.makeMove(nextEngineMove);
+    cout << "here"<<endl;
     sf.getFen();
     if (kill)
     {
@@ -35,9 +36,11 @@ void Chess::urMove()
         
     }
     
-    
-        ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
+        cout << "here2" << endl;
+        ur.makeMove(1, 1, 1); // input first 2 from array and z=1
+        cout << "here3" << endl;
         assert(ur.readWhenChanged(128) == 0);
+        cout << "here4" << endl;
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0
         // at.write(1000,1);
         // assert(at.readWhenChanged(1000)==0);

@@ -1,4 +1,8 @@
 #include "modbus.hpp"
+#include <unistd.h>
+Modbus::Modbus(Modbus * in){
+    ctx=in->ctx;
+}
 Modbus::Modbus(const char *ip){
     ctx = modbus_new_tcp(ip, 502);
     if (ctx == NULL) {
@@ -48,6 +52,7 @@ int Modbus::readWhenChanged(int reg){
     }
     int initial = tab_reg[0];
     while (tab_reg[0] == initial){
+        sleep(1);
         rc = modbus_read_registers(ctx, reg, 1, tab_reg);
         if (rc == -1)
         {
