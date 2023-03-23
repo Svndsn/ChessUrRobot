@@ -10,7 +10,7 @@ int main()
         cout << "Won't work on windows" << endl;
         return 1;
     #else
-        Chess game("../Stockfish-master/src/stockfish", "127.0.0.1", "/dev/tty.usbserial-DK0AI63M", 1);
+        Chess game("../Stockfish-master/src/stockfish", "192.168.100.11", "/dev/tty.usbserial-DK0AI63M", 1);
     #endif
 
     while (1)

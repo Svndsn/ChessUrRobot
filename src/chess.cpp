@@ -20,16 +20,16 @@ void Chess::urMove()
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
-        at.write(1000,1);
-        assert(at.readWhenChanged(1000)==0);
+        // at.write(1000,1);
+        // assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(10, 10, 3);
         assert(ur.readWhenChanged(128) == 0);
-        at.write(1000,2);
-        assert(at.readWhenChanged(1000)==0);
+        // at.write(1000,2);
+        // assert(at.readWhenChanged(1000)==0);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
         
@@ -39,16 +39,16 @@ void Chess::urMove()
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0
-        at.write(1000,1);
-        assert(at.readWhenChanged(1000)==0);
+        // at.write(1000,1);
+        // assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
-        at.write(1000,2);
-        assert(at.readWhenChanged(1000)==0);
+        // at.write(1000,2);
+        // assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(9, 9, 2); // input default pos
