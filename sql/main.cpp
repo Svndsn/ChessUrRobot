@@ -4,7 +4,68 @@
 #include <cppconn/exception.h>
 #include <cppconn/prepared_statement.h>
 
-using namespace std;
+
+void createDatabaseAndTable() {
+    sql::Driver* driver(get_driver_instance()); //p
+    std::unique_ptr<sql::Connection> con(driver->connect("tcp://127.0.0.1:3306", "valdemar", "password"));
+    std::unique_ptr<sql::Statement> stmt(con->createStatement());
+
+    // Create database if it doesn't exist
+    stmt->execute("CREATE DATABASE IF NOT EXISTS myDB");
+
+    // Switch to the database
+    con->setSchema("myDB");
+
+    // Create table if it doesn't exist
+    stmt->execute("CREATE TABLE IF NOT EXISTS kunde (kunde_id INT NOT NULL, navn VARCHAR(50), adresse VARCHAR(50), mail VARCHAR(50), tlf INT, PRIMARY KEY (kunde_id))");
+}
+
+void insertData(std::string navn, std::string adresse, std::string mail, int tlf) {
+    sql::Driver* driver(get_driver_instance());
+    std::unique_ptr<sql::Connection> con(driver->connect("tcp://127.0.0.1:3306", "valdemar", "password"));
+    con->setSchema("myDB");
+
+    std::unique_ptr<sql::Statement> stmt(con->createStatement());
+    std::unique_ptr<sql::ResultSet> res(stmt->executeQuery("SELECT MAX(kunde_id) FROM kunde"));
+
+    int kunde_id = 1;
+    if (res->next()) {
+        kunde_id = res->getInt(1) + 1;
+    }
+
+
+
+    std::unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT IGNORE INTO kunde (kunde_id, navn, adresse, mail, tlf) VALUES (?, ?, ?, ?, ?)"));
+    pstmt->setInt(1, kunde_id);
+    pstmt->setString(2, navn);
+    pstmt->setString(3, adresse);
+    pstmt->setString(4, mail);
+    pstmt->setInt(5, tlf);
+    pstmt->execute();
+    pstmt->clearParameters();
+}
+
+void printKundeTable(sql::Connection& con) {
+    std::unique_ptr<sql::Statement> stmt;
+    std::unique_ptr<sql::ResultSet> res;
+
+    stmt = std::unique_ptr<sql::Statement>(con.createStatement());
+    res = std::unique_ptr<sql::ResultSet>(stmt->executeQuery("SELECT * FROM kunde"));
+
+    while (res->next()) {
+        int kunde_id = res->getInt("kunde_id");
+        std::string navn = res->getString("navn");
+        std::string adresse = res->getString("adresse");
+        std::string mail = res->getString("mail");
+        int tlf = res->getInt("tlf");
+
+        std::cout << kunde_id << ", " << navn << ", " << adresse << ", " << mail << ", " << tlf << std::endl;
+    }
+    res->close();
+}
+
+
+
 
 int main() {
     sql::Driver* driver;
@@ -16,73 +77,27 @@ int main() {
     try {
         driver = get_driver_instance();
         
-        con = std::unique_ptr<sql::Connection>(driver->connect("tcp://127.0.0.1:3306", "valdemar", "Cola0712"));
-        con->setSchema("testdb"); // Set the database schema
-
-        // Prepare the SQL statement
-        pstmt = std::unique_ptr<sql::PreparedStatement>(con->prepareStatement("SELECT * FROM kunde"));
-        // Execute the query
-        res = std::unique_ptr<sql::ResultSet>(pstmt->executeQuery());
-
-        std::cout << "\n---------------------------" << std::endl;
-
-        // Process the results
-        while (res->next()) {
-            int kunde_id = res->getInt("kunde_id");
-            std::string navn = res->getString("navn");
-            std::string adresse = res->getString("adresse");
-            std::string mail = res->getString("adresse");
-            int tlf = res->getInt("tlf");
-
-            std::cout << "ID: " << kunde_id << ", Name: " << navn << ", Adresse: " << adresse <<
-            ", Mail: " << mail << ", tlf: " << tlf << std::endl;
-        }
+        con = std::unique_ptr<sql::Connection>(driver->connect("tcp://127.0.0.1:3306", "valdemar", "password"));
         
-        // Close the result set, prepared statement, and connection
-        //delete res; //dynamisk på heapen, så 'del' mod memory leaks og til genbrug :)
-        //delete pstmt;
+        createDatabaseAndTable();
+        con->setSchema("myDB"); 
 
-        std::cout << "\n---------Insert------------" << std::endl;
-
-        //insert new item query
-        pstmt = std::unique_ptr<sql::PreparedStatement>(con->prepareStatement("INSERT INTO kunde (kunde_id, navn, adresse, mail, tlf) VALUES (?,?,?,?,?)"));
-        pstmt->setInt(1, 5); // set value for first placeholder
-        pstmt->setString(2, "Tim"); // set value for second placeholder
-        pstmt->setString(3, "Timvej 10"); // set value for third placeholder
-        pstmt->setString(4, "tim@mail.tim");
-        pstmt->setInt(5, 12345678);  
-        pstmt->execute();
-
-        //delete pstmt;
-
-        std::cout << "\n---------Select again------------" << std::endl;
-
-
-        // Kør select igen
-        pstmt = std::unique_ptr<sql::PreparedStatement>(con->prepareStatement("SELECT * FROM kunde"));
-        //sql::ResultSet* 
-        res = std::unique_ptr<sql::ResultSet>(pstmt->executeQuery());
-
-        while (res->next()) {
-            int kunde_id = res->getInt("kunde_id");
-            std::string navn = res->getString("navn");
-            std::string adresse = res->getString("adresse");
-            std::string mail = res->getString("adresse");
-            int tlf = res->getInt("tlf");
-
-            std::cout << "ID: " << kunde_id << ", Name: " << navn << ", Adresse: " << adresse <<
-            ", Mail: " << mail << ", tlf: " << tlf << std::endl;
-
-        }
-
+        std::cout << "\n-1----------------------------------\n" << std::endl;
         
-        //delete res;
-        //delete pstmt;
-
+        printKundeTable(*con);
         
+        insertData("Tim", "Timvej 10", "tim@mail.tim", 12345678);
+        insertData("Lars", "Larsvej 7", "lars@mail.lars", 66612399);
+
+        std::cout << "\n-2----------------------------------\n" << std::endl;
+
+        printKundeTable(*con);
+    
+        std::cout << "\n-3----------------------------------\n" << std::endl;
+
+
         stmt = std::unique_ptr<sql::Statement>(con->createStatement());
-        stmt->execute("DELETE FROM kunde WHERE kunde_id = 5");
-        //delete stmt;
+        stmt->execute("DELETE FROM kunde WHERE kunde_id > 6");
 
     
     } catch (sql::SQLException& e) {
