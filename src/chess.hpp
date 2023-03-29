@@ -7,13 +7,13 @@ class Chess
 private:
     ChessEngine sf;
     Modbus ur;
- 
-    std::string nextEngineMove;
-    int * parseMove(std::string coordinate);
+    int * parseMove(std::string move);
+    void urMove(std::string nextEngineMove);
+    bool moveIsKill(std::string fen, int movex, int movey);
 public:
     Chess(string path, Modbus* in);
-    void urMove();
-    void userMove(std::string coordinates);
+    ~Chess();
+    void userMove(std::string move);
     bool isGameOver();
-    bool moveIsKill(std::string fen, int movex, int movey);
+    const void ping(Modbus *ur);
 };
