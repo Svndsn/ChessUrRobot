@@ -12,7 +12,6 @@ struct process {
 class ChessEngine {
 private:
     process* engineProcess;
-    bool gameover = false;
     string board = "position startpos moves";
     string lastEngineMove;
     string readResponse();
@@ -28,5 +27,4 @@ public:
     bool readGameover();
     string getFen();
     void makeMove(string next_move);
-    bool doesMoveKill(const string &fen, const string &move_str);
 };

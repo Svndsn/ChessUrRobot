@@ -2,19 +2,24 @@
 #include <assert.h>
 #include <iostream>
 #include <vector>
+#include <unistd.h>
+#include <thread>
 Chess::Chess(string path, Modbus* in):sf(path),ur(*in)
 {
 }
 
-void Chess::urMove()
+Chess::~Chess(){
+
+}
+
+void Chess::urMove(std::string nextEngineMove)
 {
     int *coordArray = parseMove(nextEngineMove);
     bool kill=0;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
     ur.write(128,1);
     sf.makeMove(nextEngineMove);
-    cout << "here"<<endl;
-    sf.getFen();
+    
     if (kill)
     {
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
@@ -35,13 +40,10 @@ void Chess::urMove()
         assert(ur.readWhenChanged(128) == 0);
         
     }
-    
-        cout << "here2" << endl;
-        ur.makeMove(1, 1, 1); // input first 2 from array and z=1
-        cout << "here3" << endl;
+        ur.makeMove(coordArray[0], coordArray[1], 1); // same input but z=0
         assert(ur.readWhenChanged(128) == 0);
-        cout << "here4" << endl;
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0
+        assert(ur.readWhenChanged(128) == 0);
         // at.write(1000,1);
         // assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
@@ -54,24 +56,25 @@ void Chess::urMove()
         // assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
-        ur.makeMove(9, 9, 2); // input default pos
-        assert(ur.readWhenChanged(128) == 0);
+        //ur.makeMove(9, 9, 2); // input default pos
+        //assert(ur.readWhenChanged(128) == 0);
     
 }
 
-int * Chess::parseMove(std::string coordinates){
+int * Chess::parseMove(std::string move){
     static int myArray[4];
-    myArray[0]=coordinates[0]-97;
-    myArray[1]=coordinates[1]-49;
-    myArray[2]=coordinates[2]-97;
-    myArray[3]=coordinates[3]-49;
+    myArray[0]=move[0]-97;
+    myArray[1]=move[1]-49;
+    myArray[2]=move[2]-97;
+    myArray[3]=move[3]-49;
     
     return myArray;
 
 }
 
-void Chess::userMove(std::string coordinates){
-    nextEngineMove= sf.sendUserMove(coordinates);
+void Chess::userMove(std::string move){
+    std::string nextEngineMove = sf.sendUserMove(move);
+    urMove(nextEngineMove);
 }
 
 bool Chess::isGameOver(){

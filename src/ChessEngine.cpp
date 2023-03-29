@@ -97,8 +97,8 @@ void ChessEngine::startEngine(string fileName)
 
 void ChessEngine::sendCommand(string command)
 {
-    cout << "sending command: " << command << endl;
-    cout.flush();
+    //cout << "sending command: " << command << endl;
+    //cout.flush();
     // fprintf(engineProcess->infd, "%s\n", command.c_str());
     write(engineProcess->infd, command.c_str(), command.length());
     write(engineProcess->infd, "\n", 1);
@@ -109,7 +109,7 @@ string ChessEngine::readResponse()
     char buffer[4096] = {0};
     int resp_len = read(engineProcess->outfd, buffer, sizeof(buffer));
     string response(buffer, resp_len);
-    cout << "received response: " << response << endl;
+    //cout << "received response: " << response << endl;
     return response;
 }
 
@@ -137,8 +137,10 @@ void ChessEngine::endProcess()
 bool ChessEngine::readGameover()
 {
     sendCommand("go movetime 100");
+    bool gameover;
     while (true)
     {
+        
         string response = readResponse();
         size_t buff = response.find("bestmove");
         if (buff != string::npos)
@@ -147,8 +149,10 @@ bool ChessEngine::readGameover()
             if (buffGameover.substr(10,6)=="(none)")
             {
                 gameover = true;
+                break;
             } else {
                 gameover = false;
+                break;
             }
             
         }
@@ -199,54 +203,4 @@ string ChessEngine::getFen()
     int start = response.find("Fen: ")+5;
     int stop = response.find(" ",start) - start;
     return response.substr(start,stop);
-}
-
-bool ChessEngine::doesMoveKill(const string &fen, const string &move_str)
-{
-    // Split the FEN string into its components
-    std::vector<std::string> fen_components;
-    std::string component;
-    for (char c : fen)
-    {
-        if (c == ' ')
-        {
-            fen_components.push_back(component);
-            component = "";
-        }
-        else
-        {
-            component += c;
-        }
-    }
-    fen_components.push_back(component);
-
-    // Get the current board position
-    std::string position = fen_components[0];
-
-    // Apply the move to the board position
-    int from_file = move_str[0] - 'a';
-    int from_rank = 8 - (move_str[1] - '0');
-    int to_file = move_str[2] - 'a';
-    int to_rank = 8 - (move_str[3] - '0');
-    int from_square = from_rank * 8 + from_file;
-    int to_square = to_rank * 8 + to_file;
-    char piece = position[from_square];
-    position[from_square] = ' ';
-    position[to_square] = piece;
-
-    // Check if a piece was captured
-    bool piece_captured = false;
-    for (size_t i = 0; i < position.size(); ++i)
-    {
-        if (position[i] != fen_components[0][i])
-        {
-            // Check if a piece is missing in the new position
-            if (position[i] == ' ')
-            {
-                piece_captured = true;
-                break;
-            }
-        }
-    }
-    return piece_captured;
 }

@@ -63,7 +63,11 @@ int Modbus::readWhenChanged(int reg){
 }
 
 void Modbus::write(int reg, int val){
-    modbus_write_register(ctx,reg,val);
+    int rc =modbus_write_register(ctx,reg,val);
+    if (rc == -1)
+        {
+            fprintf(stderr, "%s\n", modbus_strerror(errno));
+        }
 }
 
 void Modbus::makeMove(int x,int y,int z){
