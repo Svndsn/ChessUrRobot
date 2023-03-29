@@ -1,7 +1,7 @@
 #include "SQLInterface.h"
 
 int main() {
-    SQLInterface chessDB("tcp://127.0.0.1:3306", "valdemar", "password", "myTestDB");
+    SQLInterface chessDB("tcp://127.0.0.1:3306", "valdemar", "password");
 
     try {
         chessDB.connect();
