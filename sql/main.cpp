@@ -7,7 +7,7 @@
 
 void createDatabaseAndTable() {
     sql::Driver* driver(get_driver_instance()); //p
-    std::unique_ptr<sql::Connection> con(driver->connect("tcp://127.0.0.1:3306", "valdemar", "password"));
+    std::unique_ptr<sql::Connection> con(driver->connect("tcp://127.0.0.1:3306", "sebas", "password"));
     std::unique_ptr<sql::Statement> stmt(con->createStatement());
 
     // Create database if it doesn't exist
@@ -22,7 +22,7 @@ void createDatabaseAndTable() {
 
 void insertData(std::string navn, std::string adresse, std::string mail, int tlf) {
     sql::Driver* driver(get_driver_instance());
-    std::unique_ptr<sql::Connection> con(driver->connect("tcp://127.0.0.1:3306", "valdemar", "password"));
+    std::unique_ptr<sql::Connection> con(driver->connect("tcp://127.0.0.1:3306", "sebas", "password"));
     con->setSchema("myDB");
 
     std::unique_ptr<sql::Statement> stmt(con->createStatement());
@@ -77,7 +77,7 @@ int main() {
     try {
         driver = get_driver_instance();
         
-        con = std::unique_ptr<sql::Connection>(driver->connect("tcp://127.0.0.1:3306", "valdemar", "password"));
+        con = std::unique_ptr<sql::Connection>(driver->connect("tcp://127.0.0.1:3306", "sebas", "password"));
         
         createDatabaseAndTable();
         con->setSchema("myDB"); 

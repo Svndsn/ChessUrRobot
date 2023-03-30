@@ -26,4 +26,5 @@ clean:
 # Linking the executable from the object files
 main: $(OBJECTS)
 	$(CC) $^ $(LDFLAGS) -o $@
+	$(RM) $(DEPENDS) $(OBJECTS)
 	./main

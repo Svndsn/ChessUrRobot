@@ -7,7 +7,7 @@
 #include "SQLInterface.h"
 #include <string>
 
-SQLInterface::SQLInterface(std::string host, std::string username, std::string password, std::string schema) : host_(host), username_(username), password_(password), schema_(schema) {}
+SQLInterface::SQLInterface(std::string host, std::string username, std::string password) : host_(host), username_(username), password_(password) {}
 
 void SQLInterface::connect()
 {
@@ -16,19 +16,21 @@ void SQLInterface::connect()
     //con_->setSchema(schema_);
     std::unique_ptr<sql::Statement> stmt(con_->createStatement());
 
+    std::string dbName = "myDBtest";
+    std::string createStmt = "CREATE DATABASE IF NOT EXISTS ";
+    createStmt.append(dbName);
+
+
     // Create database if it doesn't exist
-    stmt->execute("CREATE DATABASE IF NOT EXISTS myTest2DB");
+    stmt->execute(createStmt);   //
 
     // Switch to the database
-    con_->setSchema("myTest2DB");
+    con_->setSchema(dbName);
 
     // Create table if it doesn't exist
     stmt->execute("CREATE TABLE IF NOT EXISTS kunde (kunde_id INT NOT NULL, navn VARCHAR(50), adresse VARCHAR(50), mail VARCHAR(50), tlf INT, PRIMARY KEY (kunde_id))");
 }
 
-void createDatabase(){
-
-}
 
 void SQLInterface::insertData(std::string navn, std::string adresse, std::string mail, int tlf)
 {

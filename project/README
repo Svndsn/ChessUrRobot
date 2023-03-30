@@ -1,0 +1,31 @@
+# Upload
+
+make
+
+
+# Compile main
+
+make main.hex
+
+
+# Clean
+
+make clean
+
+# Set fuse bits
+
+Gå ind i makefile og ændre værdierne i linje 51 til de ønskede fuse bits
+make fuse
+
+
+# Tilføj flere filer
+
+Alle Cpp filer skal tilføjes til variablens CPPFILES i makefile
+
+# Opsætning af environment
+apt install build-essential
+apt install gcc-avr
+apt install avr-libc
+apt install avrdude
+
+Tilføj "/usr/lib/avr/include" til c_cpp_properties.json i vscode
