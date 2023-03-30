@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <iostream>
 #include <mysql_connection.h>
 #include <mysql_driver.h>
@@ -106,3 +107,5 @@ int main() {
 
     return 0;
 }
+=======
+>>>>>>> cf6da24a7829e9607023e159678de83c03d4aba4
