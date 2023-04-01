@@ -1,4 +1,0 @@
-1. Make it interface with the MODBUS ATMEGA interface
-2. Add Overleaf to git?
-3. Test the UR script and make sure the robot can move to specific points
-4. Find the standard of a chess board and make an array using the measurements
