@@ -19,13 +19,14 @@ int main()
     
     
     Modbus *ur = new Modbus("192.168.100.11");
+    Modbus *at = new Modbus("/dev/tty.usbserial-AL01GAUG",10);
     #if defined(__linux__) // Or #if __linux__
-        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur);
+        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur,at);
     #elif _WIN32
         cout << "Won't work on windows" << endl;
         return 1;
     #else
-        Chess game("../Stockfish-master/src/stockfish", ur);
+        Chess game("../Stockfish-master/src/stockfish", ur,at);
     #endif
     thread pingThread(ping,ur);
     while (!game.isGameOver())

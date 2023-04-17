@@ -4,7 +4,7 @@
 #include <vector>
 #include <unistd.h>
 #include <thread>
-Chess::Chess(string path, Modbus* in):sf(path),ur(*in)
+Chess::Chess(string path, Modbus* ur,Modbus* at):sf(path),ur(*ur),at(*at)
 {
 }
 
@@ -26,34 +26,43 @@ void Chess::urMove(std::string nextEngineMove)
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
-        // at.write(1000,1);
-        // assert(at.readWhenChanged(1000)==0);
+        at.write(1000,1);
+        
+        
+        assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(10, 10, 3);
         assert(ur.readWhenChanged(128) == 0);
-        // at.write(1000,2);
-        // assert(at.readWhenChanged(1000)==0);
+        at.write(1000,2);
+        
+        assert(at.readWhenChanged(1000)==0);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
         
     }
+        cout << coordArray[0] << endl;
+        cout << coordArray[1] << endl;
+        cout << coordArray[2] << endl;
+        cout << coordArray[3] << endl;
         ur.makeMove(coordArray[0], coordArray[1], 1); // same input but z=0
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0
         assert(ur.readWhenChanged(128) == 0);
-        // at.write(1000,1);
-        // assert(at.readWhenChanged(1000)==0);
+        at.write(1000,1);
+        
+        //assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
-        // at.write(1000,2);
-        // assert(at.readWhenChanged(1000)==0);
+        at.write(1000,2);
+        
+        //assert(at.readWhenChanged(1000)==0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         //ur.makeMove(9, 9, 2); // input default pos
