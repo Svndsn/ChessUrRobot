@@ -32,16 +32,50 @@
 #define REG_INPUT_START 1000
 #define REG_INPUT_NREGS 4
 
+
+#define PWM_PIN PD5
+#define DIR_PIN PC2
+
 /* ----------------------- Static variables ---------------------------------*/
 static USHORT   usRegInputStart = REG_INPUT_START;
 static USHORT   usRegInputBuf[REG_INPUT_NREGS];
 
 /* ----------------------- Start implementation -----------------------------*/
+void setup_dir() {
+	// Configure PC2 as output
+	DDRC |= (1 << DIR_PIN);
+}
+
+void set_direction(int dir) {
+	if (dir) {
+		// Set DIR_PIN high for forward direction
+		PORTC |= (1 << DIR_PIN);
+		} else {
+		// Set DIR_PIN low for reverse direction
+		PORTC &= ~(1 << DIR_PIN);
+	}
+}
+
+void setup_pwm() {
+	// Configure PD5 as output
+	DDRD |= (1 << PWM_PIN);
+	
+	// Configure Timer 0 for Fast PWM mode
+	
+	
+	TCCR1A |= (1 << COM1A1) | (1 << WGM11);
+	TCCR1B |= (1 << WGM13) | (1 << WGM12) | (1 << CS11);
+	ICR1 = 0xFFFF;
+}
+
+
+
 int
 main( void )
 {
-    DDRD |= (1 << DDD5);
-	DDRC |= (1 << DDC2);
+
+    //setup_pwm();
+	//setup_dir();
     eMBErrorCode    eStatus;
 
     eStatus = eMBInit( MB_RTU, 0x0A, 0, 38400, MB_PAR_NONE );
@@ -139,18 +173,40 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
     return MB_ENOREG;
 }
 void grip(){
-	PORTC |= (1 << PC2);  
-	PORTD |= (1 << PD5);     
-	_delay_ms(3000);
-	PORTD &= ~(1 << PD5);   
+	 setup_pwm();
+	setup_dir();
+    // Move the motor forward for 4 seconds
+	set_direction(1);
+	OCR1A = 0x3FFF; //25% Hastighed
+	_delay_ms(1000);// Hvor lang tid den kører
+	OCR1A = 0x00; //0% Hastighed
+	_delay_ms(1000); // Hvor lang tid den holder pause
+	
+	// Reverse the motor and turn on the LED for 4 seconds
+	set_direction(0);
+	OCR1A = 0x3FFF;//25% Hastighed
+	
+	_delay_ms(1000);
+	
+	
+	
+	
+	OCR1A = 0x7FFF; //50% Hastighed
+	_delay_ms(1000);// Hvor lang tid den kører
+	
+	// Stop the motor
+	OCR1A = 0x00;//0% Hastighed
 	
 }
 
 void ungrip(){
-	PORTC &= ~(1 << PC2);  
-	PORTD |= (1 << PD5);     
-	_delay_ms(3000);
-	PORTD &= ~(1 << PD5);
+	
+    set_direction(0);
+	OCR1A = 0xFFFF;
+	_delay_ms(1000);
+    OCR1A = 0x000F;
 
 	
 }
+
+

@@ -1,18 +1,21 @@
 
 def chess():
-
-    rows = [0.255, 0.255-((0.255-0.126)/7)*1, 0.255-((0.255-0.126)/7)*2, 0.255-((0.255-0.126)/7)*3, 0.255-((0.255-0.126)/7)*4, 0.255-((0.255-0.126)/7)*5, 0.255-((0.255-0.126)/7)*6, 0.126,0.055]
-    columns = [-0.300, -0.300-((0.625-0.300)/7)*1, -0.300-((0.625-0.300)/7)*2, -0.300-((0.625-0.300)/7)*3, -0.300-((0.625-0.300)/7)*4, -0.300-((0.625-0.300)/7)*5, -0.300-((0.625-0.300)/7)*6, -0.300-((0.625-0.300)/7)*7,-0.47]
+    startx=
+    starty=
+    xslutx=
+    xsluty=
+    yslutx=
+    ysluty
     z = [0.1695, 0.310,0.720,550]
     killedPieces = 0
     while True:
         while read_port_register(128) != 1:
             sleep(1)
         end
-        row_var = read_port_register(129)
-        column_var = read_port_register(130)
+        x = read_port_register(129)
+        y = read_port_register(130)
         z_var = read_port_register(131)
-        pose = p[rows[row_var], columns[column_var], z[z_var], 2.623, -1.738, 0.021]
+        pose = p[(startx-((startx-xslutx)/7)*x+startx-((startx-yslutx)/7)*y), (starty-((starty-ysluty)/7)*y+starty-((starty-xsluty)/7)*x), z[z_var], 2.623, -1.738, 0.021]
         if row_var==10:
             columns[10]=columns[10]-0.1
         end
@@ -21,3 +24,9 @@ def chess():
     end
 end
 chess()
+
+
+(startx-((startx-xslutx)/7)*x+startx-((startx-yslutx)/7)*y)
+
+(starty-((starty-ysluty)/7)*y+starty-((starty-xsluty)/7)*x)
+

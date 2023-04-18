@@ -49,8 +49,8 @@ xMBPortTimersInit( USHORT usTim1Timerout50us )
     usTimerOCRADelta =( MB_TIMER_TICKS * usTim1Timerout50us*1.0 ) / ( MB_50US_TICKS*1.0 );
     
 
-    TCCR1A = 0x00;
-    TCCR1B = 0x00;
+    TCCR0A = 0x00;
+    TCCR0B = 0x00;
     
 
     vMBPortTimersDisable(  );
@@ -62,31 +62,31 @@ xMBPortTimersInit( USHORT usTim1Timerout50us )
 inline void
 vMBPortTimersEnable(  )
 {
-    TCNT1 = 0x0000;
+    TCNT0 = 0x0000;
     if( usTimerOCRADelta > 0 )
     {
         
-        TIMSK1 |= _BV( OCIE1A );
-        OCR1A = usTimerOCRADelta;
+        TIMSK0 |= _BV( OCIE0A );
+        OCR0A = usTimerOCRADelta;
         
     }
     
     
-    TCCR1B |= _BV( CS12 ) | _BV( CS10 );
+    TCCR0B |= _BV( CS12 ) | _BV( CS10 );
 }
 
 inline void
 vMBPortTimersDisable(  )
 {
     /* Disable the timer. */
-    TCCR1B &= ~( _BV( CS12 ) | _BV( CS10 ) );
+    TCCR0B &= ~( _BV( CS02 ) | _BV( CS00 ) );
     /* Disable the output compare interrupts for channel A/B. */
-    TIMSK1 &= ~( _BV( OCIE1A ) );
+    TIMSK0 &= ~( _BV( OCIE0A ) );
     /* Clear output compare flags for channel A/B. */
-    TIFR1 |= _BV( OCF1A ) ;
+    TIFR0 |= _BV( OCF0A ) ;
 }
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMPA_vect)
 {
     
     ( void )pxMBPortCBTimerExpired(  );

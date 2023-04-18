@@ -19,7 +19,7 @@ int main()
     
     
     Modbus *ur = new Modbus("192.168.100.11");
-    Modbus *at = new Modbus("/dev/tty.usbserial-AL01GAUG",10);
+    Modbus *at = new Modbus("/dev/tty.usbserial-DK0AI3MN",10);
     #if defined(__linux__) // Or #if __linux__
         Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur,at);
     #elif _WIN32
