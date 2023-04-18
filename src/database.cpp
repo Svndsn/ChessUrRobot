@@ -30,7 +30,7 @@ void ChessRobotDatabase::createDatabase()
             stmt->execute("CREATE TABLE IF NOT EXISTS moves ("
                           "move_id INT AUTO_INCREMENT PRIMARY KEY,"
                           "game_id INT,"
-                          "move VARCHAR(50),"
+                          "move VARCHAR(10),"
                           "turn BOOL,"
                           "isKill BOOL,"
                           "FOREIGN KEY (game_id) REFERENCES game(game_id)"
@@ -42,6 +42,14 @@ void ChessRobotDatabase::createDatabase()
                           "ampUsage DOUBLE,"
                           "move_id INT,"
                           "FOREIGN KEY (move_id) REFERENCES moves(move_id)"
+                          ")");
+            
+            // Create the win table if it doesn't exist
+            stmt->execute("CREATE TABLE IF NOT EXISTS win ("
+                          "game_id INT,"
+                          "win VARCHAR(5),"
+                          "PRIMARY KEY (game_id, win),"
+                          "FOREIGN KEY (game_id) REFERENCES game(game_id)"
                           ")");
 }
 
