@@ -47,7 +47,7 @@ void ChessRobotDatabase::createDatabase()
             // Create the win table if it doesn't exist
             stmt->execute("CREATE TABLE IF NOT EXISTS win ("
                           "game_id INT,"
-                          "win VARCHAR(5),"
+                          "whoWon VARCHAR(5),"
                           "PRIMARY KEY (game_id, win),"
                           "FOREIGN KEY (game_id) REFERENCES game(game_id)"
                           ")");
@@ -60,7 +60,7 @@ void ChessRobotDatabase::connect(const std::string& username, const std::string&
     stmt = con->createStatement();
 }
 
-void ChessRobotDatabase::insertGame(const std::string& playerName) {
+void ChessRobotDatabase::newGame(const std::string& playerName) {
     try {
         // Get the current date in YYYY-MM-DD format
         time_t now = time(nullptr);
@@ -71,6 +71,77 @@ void ChessRobotDatabase::insertGame(const std::string& playerName) {
         // Construct the SQL statement and execute it
         std::string sql = "INSERT INTO game (playerName, date) VALUES ('" + playerName + "', '" + date + "')";
         stmt->execute(sql);
+    }
+    catch (sql::SQLException& e) {
+        std::cerr << "SQL error: " << e.what() << std::endl;
+        std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
+    }
+
+    // Update the game_id to the current game being played
+    getGameIdFromDatabase();
+}
+
+void ChessRobotDatabase::getGameIdFromDatabase() {
+    try {
+            // Execute the SQL query to get the largest game_id
+            sql::ResultSet* res = stmt->executeQuery("SELECT MAX(game_id) FROM game");
+
+            // Check if the result set has any rows
+            if (res->next()) {
+                // Get the value of the largest game_id
+                game_id = res->getInt(1);
+            }
+
+            // Free the result set
+            delete res;
+        }
+        catch (sql::SQLException& e) {
+            std::cerr << "SQL error: " << e.what() << std::endl;
+            std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
+        }
+}
+
+void ChessRobotDatabase::insertMove(const std::string& move, bool turn, bool isKill) {
+    try {
+        // Create a SQL query to insert the new move into the moves table
+        std::stringstream ss;
+        ss << "INSERT INTO moves (game_id, move, turn, isKill) VALUES (" << game_id << ", '"
+           << move << "', " << turn << ", " << isKill << ")";
+
+        // Execute the SQL query
+        stmt->execute(ss.str());
+    }
+    catch (sql::SQLException& e) {
+        std::cerr << "SQL error: " << e.what() << std::endl;
+        std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
+    }
+}
+
+void ChessRobotDatabase::win(bool turn) {
+    try
+    {
+        // Create a SQL query to insert the winner into the win table
+        std::stringstream ss;
+        ss << "INSERT INTO win (game_id, whoWon) VALUES (" << game_id << ", " << turn << ")";
+
+        // Execute the SQL query
+        stmt->execute(ss.str());
+    }
+    catch (sql::SQLException& e) {
+        std::cerr << "SQL error: " << e.what() << std::endl;
+        std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
+    }
+}
+
+void ChessRobotDatabase::insertMotorData(double ampUsage){
+    try
+    {
+        // Create a SQL query to insert the ampUsage into the motordata table
+        std::stringstream ss;
+        ss << "INSERT INTO motordata (ampUsage, move_id) VALUES (" << ampUsage << ", " << game_id << ")";
+
+        // Execute the SQL query
+        stmt->execute(ss.str());
     }
     catch (sql::SQLException& e) {
         std::cerr << "SQL error: " << e.what() << std::endl;

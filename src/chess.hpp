@@ -11,6 +11,7 @@ private:
     int * parseMove(std::string move);
     void urMove(std::string nextEngineMove);
     bool moveIsKill(std::string fen, int movex, int movey);
+    bool turn; // 1 for white 0 for black
 public:
     Chess(string path, Modbus* ur, Modbus* at);
     ~Chess();
