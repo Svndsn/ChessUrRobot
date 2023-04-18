@@ -4,8 +4,10 @@
 #include <vector>
 #include <unistd.h>
 #include <thread>
-Chess::Chess(string path, Modbus* ur,Modbus* at):sf(path),ur(*ur),at(*at)
+#include "database.h"
+Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* db):sf(path),ur(*ur),at(*at),db(*db)
 {
+
 }
 
 Chess::~Chess(){
@@ -15,11 +17,15 @@ Chess::~Chess(){
 void Chess::urMove(std::string nextEngineMove)
 {
     int *coordArray = parseMove(nextEngineMove);
-    bool kill=0;
+    bool kill;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
     ur.write(128,1);
     sf.makeMove(nextEngineMove);
+
+    // Insert black move into db
+    db.insertMove(nextEngineMove,0,kill);
     
+
     if (kill)
     {
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
@@ -83,6 +89,11 @@ int * Chess::parseMove(std::string move){
 
 void Chess::userMove(std::string move){
     std::string nextEngineMove = sf.sendUserMove(move);
+    int *coordArray = parseMove(move);
+    bool kill;
+    kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
+    // Insert white move into db
+    db.insertMove(move,1,kill);
     urMove(nextEngineMove);
 }
 
