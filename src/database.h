@@ -1,5 +1,6 @@
 #include <iostream>
 #include <mysql_connection.h>
+#pragma once
 #include <mysql_driver.h>
 #include <mysql_error.h>
 #include <cppconn/statement.h>
