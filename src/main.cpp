@@ -15,13 +15,22 @@ void ping(Modbus *ur){
         sleep(5);
     }
 }
+void ping2(Modbus *ur){
+    while(true){
+        ur->write(1001,1);
+        sleep(5);
+    }
+}
 int main()
 {   
+    string name;
+    cout << "Enter your name: " << endl;
+    getline(cin,name);
     Modbus *ur = new Modbus("192.168.100.11");
-    Modbus *at = new Modbus("/dev/tty.usbserial-DK0AI3MN",10);
-    ChessRobotDatabase db = ChessRobotDatabase("root", "password");
+    Modbus *at = new Modbus("/dev/ttyUSB3",10);
+    ChessRobotDatabase *db = new ChessRobotDatabase("root", "password");
     #if defined(__linux__) // Or #if __linux__
-        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur,at);
+        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur,at,db,name);
     #elif _WIN32
         cout << "Won't work on windows" << endl;
         return 1;
@@ -29,10 +38,8 @@ int main()
         Chess game("../Stockfish-master/src/stockfish", ur,at);
     #endif
     thread pingThread(ping,ur);
-    string name;
-    cout << "Enter your name: " << endl;
-    getline(cin,name);
-    db.newGame(name);
+    thread pingThread2(ping2,at);
+    
     while (!game.isGameOver())
     {
         string move;

@@ -52,7 +52,7 @@ int Modbus::readWhenChanged(int reg){
     }
     int initial = tab_reg[0];
     while (tab_reg[0] == initial){
-        sleep(2);
+        sleep(3);
         rc = modbus_read_registers(ctx, reg, 1, tab_reg);
         if (rc == -1)
         {
