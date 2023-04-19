@@ -43,6 +43,7 @@ static USHORT   usRegInputBuf[REG_INPUT_NREGS];
 /* ----------------------- Start implementation -----------------------------*/
 void setup_dir() {
 	// Configure PC2 as output
+	
 	DDRC |= (1 << DIR_PIN);
 }
 
@@ -73,6 +74,8 @@ void setup_pwm() {
 int
 main( void )
 {
+	setup_pwm();
+	setup_dir();
 
     //setup_pwm();
 	//setup_dir();
@@ -173,29 +176,12 @@ eMBRegDiscreteCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNDiscrete )
     return MB_ENOREG;
 }
 void grip(){
-	 setup_pwm();
-	setup_dir();
+	 
     // Move the motor forward for 4 seconds
 	set_direction(1);
-	OCR1A = 0x3FFF; //25% Hastighed
-	_delay_ms(1000);// Hvor lang tid den kører
+	OCR1A = 0xFFFF; //25% Hastighed
+	_delay_ms(500);// Hvor lang tid den kører
 	OCR1A = 0x00; //0% Hastighed
-	_delay_ms(1000); // Hvor lang tid den holder pause
-	
-	// Reverse the motor and turn on the LED for 4 seconds
-	set_direction(0);
-	OCR1A = 0x3FFF;//25% Hastighed
-	
-	_delay_ms(1000);
-	
-	
-	
-	
-	OCR1A = 0x7FFF; //50% Hastighed
-	_delay_ms(1000);// Hvor lang tid den kører
-	
-	// Stop the motor
-	OCR1A = 0x00;//0% Hastighed
 	
 }
 
@@ -203,7 +189,7 @@ void ungrip(){
 	
     set_direction(0);
 	OCR1A = 0xFFFF;
-	_delay_ms(1000);
+	_delay_ms(500);
     OCR1A = 0x000F;
 
 	
