@@ -1,18 +1,10 @@
-#include "SQLInterface.h"
+#include "database.h"
 
 int main() {
-    SQLInterface chessDB("tcp://127.0.0.1:3306", "sebas", "password");
-
-    try {
-        chessDB.connect();
-        chessDB.printKundeTable();
-        chessDB.insertData("Ghita", "Ghitavej 26", "ghita@mail.com", 45454545);
-        chessDB.printKundeTable();
-
-
-    } catch (sql::SQLException& e) {
-        std::cout << "Error connecting to MySQL: " << e.what() << std::endl;
-    }
+    ChessRobotDatabase chessDB("root", "password");
+    chessDB.newGame("Simon");
+    chessDB.insertMove("e2e4",1,0);
+    chessDB.insertMove("e7e5",0,0);
 
     return 0;
 }
