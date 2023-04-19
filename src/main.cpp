@@ -39,4 +39,5 @@ int main()
         cout << "Enter your move: " << endl;
         getline(cin, move);
         game.userMove(move);
+    }
 }
