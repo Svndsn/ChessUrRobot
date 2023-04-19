@@ -17,8 +17,6 @@ void ping(Modbus *ur){
 }
 int main()
 {   
-    
-    
     Modbus *ur = new Modbus("192.168.100.11");
     Modbus *at = new Modbus("/dev/tty.usbserial-DK0AI3MN",10);
     ChessRobotDatabase db = ChessRobotDatabase("root", "password");
@@ -41,8 +39,4 @@ int main()
         cout << "Enter your move: " << endl;
         getline(cin, move);
         game.userMove(move);
-    }
-    
-
-
 }
