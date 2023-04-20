@@ -1,12 +1,11 @@
-
 def chess():
-    startx=
-    starty=
-    xslutx=
-    xsluty=
-    yslutx=
-    ysluty
-    z = [0.1695, 0.310,0.720,550]
+    startx=0.144
+    starty=-0.669
+    yslutx=0.050
+    ysluty=-0.445
+    xslutx=0.366
+    xsluty=-0.567
+    z = [0.185, 0.310,0.720,550]
     killedPieces = 0
     while True:
         while read_port_register(128) != 1:
@@ -15,18 +14,12 @@ def chess():
         x = read_port_register(129)
         y = read_port_register(130)
         z_var = read_port_register(131)
-        pose = p[(startx-((startx-xslutx)/7)*x+startx-((startx-yslutx)/7)*y), (starty-((starty-ysluty)/7)*y+starty-((starty-xsluty)/7)*x), z[z_var], 2.623, -1.738, 0.021]
-        if row_var==10:
-            columns[10]=columns[10]-0.1
-        end
+        pose = p[(startx+((xslutx-startx)/7)*x-((startx-yslutx)/7)*y), (starty+((ysluty-starty)/7)*y-((starty-xsluty)/7)*x), z[z_var], 0.584, -3.1, 0.008]
+        #if row_var==10:
+        #    columns[10]=columns[10]-0.1
+        #end
         movel(pose,1.2,0.25,0,0)
         write_port_register(128, 0)
     end
 end
 chess()
-
-
-(startx-((startx-xslutx)/7)*x+startx-((startx-yslutx)/7)*y)
-
-(starty-((starty-ysluty)/7)*y+starty-((starty-xsluty)/7)*x)
-
