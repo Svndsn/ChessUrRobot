@@ -26,7 +26,7 @@ CPPFLAGS := $(INC_FLAGS) -std=c++11 -Wno-deprecated-enum-enum-conversion -O2 -MM
 
 # The final build step.
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS) `pkg-config --cflags --libs libmodbus`
+	$(CC) $(OBJS) -o $@ $(LDFLAGS) `pkg-config --cflags --libs libmodbus` -lmysqlcppconn
 	./$(BUILD_DIR)/main
 
 # Build step for C source

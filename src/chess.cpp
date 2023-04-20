@@ -5,9 +5,9 @@
 #include <unistd.h>
 #include <thread>
 #include "database.h"
-Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* db):sf(path),ur(*ur),at(*at),db(*db)
+Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* database, std::string name):sf(path),ur(*ur),at(*at),db(*database),playerName(name)
 {
-
+    db.newGame(playerName);
 }
 
 Chess::~Chess(){
@@ -59,7 +59,7 @@ void Chess::urMove(std::string nextEngineMove)
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,1);
         
-        //assert(at.readWhenChanged(1000)==0);
+        //if(!at.readWhenChanged(1000)==0)cout << "d"<<endl;
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
@@ -68,7 +68,7 @@ void Chess::urMove(std::string nextEngineMove)
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,2);
         
-        //assert(at.readWhenChanged(1000)==0);
+        //if(!at.readWhenChanged(1000)==0)cout << "d"<<endl;
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         //ur.makeMove(9, 9, 2); // input default pos
@@ -77,6 +77,7 @@ void Chess::urMove(std::string nextEngineMove)
 }
 
 int * Chess::parseMove(std::string move){
+    std::cout << move << std::endl;
     static int myArray[4];
     myArray[0]=move[0]-97;
     myArray[1]=move[1]-49;
@@ -88,10 +89,10 @@ int * Chess::parseMove(std::string move){
 }
 
 void Chess::userMove(std::string move){
-    std::string nextEngineMove = sf.sendUserMove(move);
     int *coordArray = parseMove(move);
-    bool kill;
+    bool kill = 0;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
+    std::string nextEngineMove = sf.sendUserMove(move);
     // Insert white move into db
     db.insertMove(move,1,kill);
     urMove(nextEngineMove);

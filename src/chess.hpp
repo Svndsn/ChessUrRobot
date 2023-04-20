@@ -2,6 +2,7 @@
 #include "modbus.hpp"
 #include "ChessEngine.h"
 #include <string>
+#include "database.h"
 class Chess
 {
 private:
@@ -12,8 +13,9 @@ private:
     int * parseMove(std::string move);
     void urMove(std::string nextEngineMove);
     bool moveIsKill(std::string fen, int movex, int movey);
+    std::string playerName;
 public:
-    Chess(string path, Modbus* ur, Modbus* at);
+    Chess(string path, Modbus* ur, Modbus* at, ChessRobotDatabase *db, std::string name);
     ~Chess();
     void userMove(std::string move);
     bool isGameOver();

@@ -167,7 +167,3 @@ void ChessRobotDatabase::insertMotorData(double ampUsage)
         std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
     }
 }
-
-void ChessRobotDatabase::printGame_id(){
-    std::cout << game_id << std::endl;
-}

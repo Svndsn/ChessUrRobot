@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-CC:= g++-11
+CC:= clang++
 
 CFLAGS = -std=c++11 -Wno-deprecated-enum-enum-conversion -O2
 CFLAGS = -std=c++11 -Wno-deprecated-enum-enum-conversion -O2 -lmysqlcppconn
