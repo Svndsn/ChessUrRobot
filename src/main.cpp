@@ -35,7 +35,7 @@ int main()
         cout << "Won't work on windows" << endl;
         return 1;
     #else
-        Chess game("../Stockfish-master/src/stockfish", ur,at);
+        Chess game("../Stockfish-master/src/stockfish", ur,at,db,name);
     #endif
     thread pingThread(ping,ur);
     thread pingThread2(ping2,at);

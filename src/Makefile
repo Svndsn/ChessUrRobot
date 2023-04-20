@@ -24,15 +24,26 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 # These files will have .d instead of .o as the output.
 CPPFLAGS := $(INC_FLAGS) -std=c++11 -Wno-deprecated-enum-enum-conversion -O2 -MMD -MP 
 
+LDFLAGS :=-lmysqlcppconn
+UNAME := $(shell uname)
+
+ifeq ($(UNAME), Linux)
+# do something Linux-y
+endif
+ifeq ($(UNAME), Darwin)
+LDFLAGS+=-L/usr/local/mysql-connector-c++/lib64 
+endif
+
+
 # The final build step.
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS) `pkg-config --cflags --libs libmodbus` -lmysqlcppconn
+	$(CC) $(OBJS) -o $@ $(LDFLAGS) `pkg-config --cflags --libs libmodbus` 
 	./$(BUILD_DIR)/main
 
 # Build step for C source
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@ 
 
 # Build step for C++ source
 $(BUILD_DIR)/%.cpp.o: %.cpp
