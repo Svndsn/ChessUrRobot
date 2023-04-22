@@ -138,8 +138,7 @@ void ChessRobotDatabase::win(const std::string &whoWon)
     {
         // Create a SQL query to insert the winner into the win table
         std::stringstream ss;
-        ss << "INSERT INTO win (game_id, whoWon) VALUES (" << game_id << ", " << whoWon << ")";
-
+        ss << "INSERT INTO win (game_id, whoWon) VALUES (" << game_id << ", '" << whoWon << "')";
         // Execute the SQL query
         stmt->execute(ss.str());
     }
