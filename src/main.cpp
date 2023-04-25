@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <chrono>
 #include "database.h"
+#include "ChessMoveDetector.h"
 using namespace std;
 //using namespace chrono_literals;
 //using namespace this_thread;
@@ -29,13 +30,14 @@ int main()
     Modbus *ur = new Modbus("192.168.100.11");
     Modbus *at = new Modbus("/dev/ttyUSB3",10);
     ChessRobotDatabase *db = new ChessRobotDatabase("root", "password");
+    ChessMoveDetector *cam = new ChessMoveDetector(0,0,0,0); 
     #if defined(__linux__) // Or #if __linux__
-        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur,at,db,name);
+        Chess game("../stockfish/stockfish-ubuntu-20.04-x86-64",ur,at,db,name,cam);
     #elif _WIN32
         cout << "Won't work on windows" << endl;
         return 1;
     #else
-        Chess game("../Stockfish-master/src/stockfish", ur,at,db,name);
+        Chess game("../Stockfish-master/src/stockfish", ur,at,db,name,cam);
     #endif
     thread pingThread(ping,ur);
     thread pingThread2(ping2,at);

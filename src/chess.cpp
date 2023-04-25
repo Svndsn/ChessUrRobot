@@ -5,9 +5,11 @@
 #include <unistd.h>
 #include <thread>
 #include "database.h"
-Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* database, std::string name):sf(path),ur(*ur),at(*at),db(*database),playerName(name)
+#include "ChessMoveDetector.h"
+Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* database, std::string name, ChessMoveDetector cam):sf(path),ur(*ur),at(*at),db(*database),playerName(name),cam(cam)
 {
     db.newGame(playerName);
+
 }
 
 Chess::~Chess(){
@@ -86,6 +88,10 @@ int * Chess::parseMove(std::string move){
     
     return myArray;
 
+}
+
+void Chess:getUserMove(){
+    userMove(cam.);
 }
 
 void Chess::userMove(std::string move){
