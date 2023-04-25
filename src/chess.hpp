@@ -12,14 +12,14 @@ private:
     Modbus at;
     ChessRobotDatabase db;
     ChessMoveDetector cam;
+    std::string playerName;
     int * parseMove(std::string move);
     void urMove(std::string nextEngineMove);
     bool moveIsKill(std::string fen, int movex, int movey);
-    std::string playerName;
-public:
-    Chess(string path, Modbus* ur, Modbus* at, ChessRobotDatabase *db, std::string name, ChessMoveDetector cam);
-    ~Chess();
     void userMove(std::string move);
+public:
+    Chess(string path, Modbus* ur, Modbus* at, ChessRobotDatabase *db, std::string name, ChessMoveDetector *cam);
+    ~Chess();
     bool isGameOver();
-    const void ping(Modbus *ur);
+    void getUserMove();
 };

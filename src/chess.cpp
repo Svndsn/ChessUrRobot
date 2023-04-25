@@ -6,7 +6,7 @@
 #include <thread>
 #include "database.h"
 #include "ChessMoveDetector.h"
-Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* database, std::string name, ChessMoveDetector cam):sf(path),ur(*ur),at(*at),db(*database),playerName(name),cam(cam)
+Chess::Chess(string path, Modbus* ur,Modbus* at, ChessRobotDatabase* database, std::string name, ChessMoveDetector* cam):sf(path),ur(*ur),at(*at),db(*database),playerName(name),cam(*cam)
 {
     db.newGame(playerName);
 
@@ -60,8 +60,9 @@ void Chess::urMove(std::string nextEngineMove)
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,1);
+        sleep(1);
         
-        //if(!at.readWhenChanged(1000)==0)cout << "d"<<endl;
+        //at.readWhenChanged(1000);
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
@@ -69,12 +70,13 @@ void Chess::urMove(std::string nextEngineMove)
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,2);
+        sleep(1);
         
-        //if(!at.readWhenChanged(1000)==0)cout << "d"<<endl;
+        //at.readWhenChanged(1000);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
-        //ur.makeMove(9, 9, 2); // input default pos
-        //assert(ur.readWhenChanged(128) == 0);
+        ur.makeMove(9, 9, 2); // input default pos
+        assert(ur.readWhenChanged(128) == 0);
     
 }
 
@@ -85,17 +87,21 @@ int * Chess::parseMove(std::string move){
     myArray[1]=move[1]-49;
     myArray[2]=move[2]-97;
     myArray[3]=move[3]-49;
-    
+     
     return myArray;
 
-}
+} 
 
-void Chess:getUserMove(){
-    userMove(cam.);
+void Chess::getUserMove(){
+    //at.write(1000,3);
+    //at.readWhenChanged(1000);
+    std::cout << sf.getFen() << std::endl;
+    userMove(cam.detectMove(sf.getFen()));
+    
 }
 
 void Chess::userMove(std::string move){
-    int *coordArray = parseMove(move);
+    int *coordArray = parseMove(move);   
     bool kill = 0;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
     std::string nextEngineMove = sf.sendUserMove(move);
@@ -103,8 +109,8 @@ void Chess::userMove(std::string move){
     db.insertMove(move,1,kill);
     urMove(nextEngineMove);
 }
-
-bool Chess::isGameOver(){
+ 
+bool Chess::isGameOver(){  
     return sf.readGameover();
 }
 

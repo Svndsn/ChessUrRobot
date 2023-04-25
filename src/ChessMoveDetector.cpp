@@ -13,17 +13,18 @@ using namespace cv;
 ChessMoveDetector::ChessMoveDetector(int _x, int _y, int _width, int _height) : x(_x), y(_y), width(_width), height(_height){
 
     baseImage = takePicture();
+    std::cout << baseImage.size() << std::endl;
     roi = Rect(x, y, width, height); 
     baseImage = baseImage(roi); 
-    rotate(baseImage, baseImage, ROTATE_90_CLOCKWISE); //ÆNDR ROTATION HER
-    //std::cout << baseImage.size() << std::endl;
+    rotate(baseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE); //ÆNDR ROTATION HER
+    //showGrid(baseImage);
     //imshow("baseImage", baseImage);
     //waitKey(0);
     //destroyAllWindows();
 }
 
 
-void ChessMoveDetector::showGrid(Mat image1){
+void ChessMoveDetector::showGrid(Mat image1){ 
 
         int grid_size = int(image1.size().width/8);
         for(int i = 0; i < 8; i++){
@@ -53,15 +54,17 @@ Mat ChessMoveDetector::fen2Matrix(std::string fen){
         }
 
         else if((int(pieces[i]) < 97)){
-            matrix.at<uchar>(col,row) = 2;
+            matrix.at<uchar>(col,row) = 1;
             col++;
         }
 
         else{
-           matrix.at<uchar>(col,row) = 1;
+           matrix.at<uchar>(col,row) = 2;
            col++; 
         }
     }
+    
+    flip(matrix, matrix,1);
     return matrix;
 }
 
@@ -76,14 +79,15 @@ bool ChessMoveDetector::fen2turn(std::string fen){
 }
 
 Mat ChessMoveDetector::takePicture(){
-    VideoCapture cam(0, CAP_V4L2);
+    VideoCapture cam(4, CAP_V4L2);
+    
     Mat image;
     bool ret = cam.read(image);
-    cam.release();
+    cam.release(); 
 
     return image;
 }
-
+  
 
 
 std::string ChessMoveDetector::detectMove(std::string fen) {
@@ -97,6 +101,9 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
     //Mat image2 = imread("chessboard1.jpg");
 
     //Tid til at rykke brikker, mens der testes
+    baseImage = takePicture();
+    Mat croppedBaseImage = baseImage(roi);
+    rotate(croppedBaseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE);
     std::string ready;
     std::cout << "Ready?" << std::endl;
     std::cin >> ready;
@@ -108,7 +115,7 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
     Mat croppedImage2 = image2(roi); 
     image2 = croppedImage2;  
 
-    rotate(image2, image2, ROTATE_90_CLOCKWISE); //ÆNDR ROTATION HER
+    rotate(image2, image2, ROTATE_90_COUNTERCLOCKWISE);
 
 
     //showGrid(image1.size(), image1);
@@ -180,9 +187,9 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
 
     std::vector<Point> positions = {diff1pos, diff2pos};
     
-    //imshow("Result", image1);
-    //waitKey(0);
-    //destroyAllWindows();
+    imshow("Result", image1);
+    waitKey(0);
+    destroyAllWindows();
     
     std::map<int, std::string> chessConversions_back = {{0, "a"}, {1, "b"}, {2, "c"}, {3, "d"}, {4, "e"}, {5, "f"}, {6, "g"}, {7, "h"}};
     std::string from_square = "";
@@ -197,7 +204,7 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
         else {
             to_square = chessConversions_back[pos.y] + std::to_string(pos.x +1);
             
-        }
+        } 
         
     }
     baseImage = image2;

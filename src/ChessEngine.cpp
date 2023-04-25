@@ -201,6 +201,7 @@ string ChessEngine::getFen()
     sendCommand("d");
     string response = readResponse();
     int start = response.find("Fen: ")+5;
-    int stop = response.find(" ",start) - start;
+    int stop = response.find(" ",start)+2 - start;
     return response.substr(start,stop);
 }
+      

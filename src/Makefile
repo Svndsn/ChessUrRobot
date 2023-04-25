@@ -24,9 +24,8 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 # These files will have .d instead of .o as the output.
 CPPFLAGS := $(INC_FLAGS) -std=c++11 -Wno-deprecated-enum-enum-conversion -O2 -MMD -MP 
 
-LDFLAGS :=-lmysqlcppconn
-CFLAGS += `pkg-config --cflags opencv4` 
-LDFLAGS += `pkg-config --libs opencv4`
+LDFLAGS :=-lmysqlcppconn `pkg-config --libs opencv4`
+CPPFLAGS += `pkg-config --cflags opencv4`
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)

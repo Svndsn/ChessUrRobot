@@ -1,5 +1,6 @@
 #include "modbus.hpp"
 #include <unistd.h>
+#include <iostream>
 Modbus::Modbus(Modbus * in){
     ctx=in->ctx;
 }
@@ -52,7 +53,7 @@ int Modbus::readWhenChanged(int reg){
     }
     int initial = tab_reg[0];
     while (tab_reg[0] == initial){
-        sleep(3);
+        sleep(1);
         rc = modbus_read_registers(ctx, reg, 1, tab_reg);
         if (rc == -1)
         {
