@@ -25,6 +25,8 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS := $(INC_FLAGS) -std=c++11 -Wno-deprecated-enum-enum-conversion -O2 -MMD -MP 
 
 LDFLAGS :=-lmysqlcppconn
+CFLAGS += `pkg-config --cflags opencv4` 
+LDFLAGS += `pkg-config --libs opencv4`
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
