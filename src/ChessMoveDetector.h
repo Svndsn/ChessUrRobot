@@ -15,6 +15,7 @@ public:
     ChessMoveDetector(int _x, int _y, int _width, int _height);
     
     std::string detectMove(std::string fen);
+    void takePictureAfterRobot();
 
     Mat takePicture();
 

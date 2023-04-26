@@ -87,27 +87,18 @@ Mat ChessMoveDetector::takePicture(){
 
     return image;
 }
-  
 
+void ChessMoveDetector::takePictureAfterRobot() {
+    baseImage = takePicture();
+    Mat croppedBaseImage = baseImage(roi);
+    rotate(croppedBaseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE);
+}
 
 std::string ChessMoveDetector::detectMove(std::string fen) {
     
     
     Mat board_mat = fen2Matrix(fen);
     bool isWhite = fen2turn(fen);
-
-    //test billeder
-    //Mat image1 = imread("chessboard0.jpg");
-    //Mat image2 = imread("chessboard1.jpg");
-
-    //Tid til at rykke brikker, mens der testes
-    baseImage = takePicture();
-    Mat croppedBaseImage = baseImage(roi);
-    rotate(croppedBaseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE);
-    std::string ready;
-    std::cout << "Ready?" << std::endl;
-    std::cin >> ready;
-    std::cout << "Running" << std::endl;
 
     //Running
     Mat image1 = baseImage;
@@ -187,9 +178,9 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
 
     std::vector<Point> positions = {diff1pos, diff2pos};
     
-    imshow("Result", image1);
+/*     imshow("Result", image1);
     waitKey(0);
-    destroyAllWindows();
+    destroyAllWindows();  */
     
     std::map<int, std::string> chessConversions_back = {{0, "a"}, {1, "b"}, {2, "c"}, {3, "d"}, {4, "e"}, {5, "f"}, {6, "g"}, {7, "h"}};
     std::string from_square = "";

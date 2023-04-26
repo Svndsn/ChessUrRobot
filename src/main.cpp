@@ -18,17 +18,20 @@ void ping(Modbus *ur){
 }
 void ping2(Modbus *ur){
     while(true){
-        ur->write(1001,1);
+        ur->write(1002,1);
         sleep(5);
     }
 }
 int main()
 {   
+
+    Modbus *ur = new Modbus("192.168.100.11");
+    Modbus *at = new Modbus("/dev/ttyUSB0",10);
+    thread pingThread(ping,ur);
+    thread pingThread2(ping2,at);
     string name;
     cout << "Enter your name: " << endl;
     getline(cin,name);
-    Modbus *ur = new Modbus("192.168.100.11");
-    Modbus *at = new Modbus("/dev/ttyUSB4",10);
     ChessRobotDatabase *db = new ChessRobotDatabase("root", "password");
     ChessMoveDetector *cam = new ChessMoveDetector(210,80,380,380); 
     #if defined(__linux__) // Or #if __linux__
@@ -39,19 +42,10 @@ int main()
     #else
         Chess game("../Stockfish-master/src/stockfish", ur,at,db,name,cam);
     #endif
-    thread pingThread(ping,ur);
-    //thread pingThread2(ping2,at);
     
     while (1)
     {
-/*         string ready;
-        while (ready!="q") 
-        {
-            getline(cin,ready);
-        } */
         game.getUserMove();
-
-          
     }
 }
   

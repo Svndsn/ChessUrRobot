@@ -36,17 +36,14 @@ void Chess::urMove(std::string nextEngineMove)
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,1);
         
-        
-        assert(at.readWhenChanged(1000)==0);
+        sleep(1);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
-        ur.makeMove(10, 10, 3);
-        assert(ur.readWhenChanged(128) == 0);
         at.write(1000,2);
         
-        assert(at.readWhenChanged(1000)==0);
+        sleep(1);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
         
@@ -77,7 +74,6 @@ void Chess::urMove(std::string nextEngineMove)
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(9, 9, 2); // input default pos
         assert(ur.readWhenChanged(128) == 0);
-    
 }
 
 int * Chess::parseMove(std::string move){
@@ -93,8 +89,11 @@ int * Chess::parseMove(std::string move){
 } 
 
 void Chess::getUserMove(){
-    //at.write(1000,3);
-    //at.readWhenChanged(1000);
+    cam.takePictureAfterRobot();
+    at.write(1001,1);
+    while(at.read(1001)==1){
+        sleep(1);
+    }
     std::cout << sf.getFen() << std::endl;
     userMove(cam.detectMove(sf.getFen()));
     
@@ -115,6 +114,7 @@ bool Chess::isGameOver(){
 }
 
 bool Chess::moveIsKill(std::string fen, int movex, int movey){
+    fen = fen.substr(0,fen.length()-2);
     fen = "/"+fen+"/";
     int pos=-1;
     int posend;
