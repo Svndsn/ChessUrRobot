@@ -39,12 +39,15 @@
 /* ----------------------- Static variables ---------------------------------*/
 static USHORT   usRegInputStart = REG_INPUT_START;
 static USHORT   usRegInputBuf[REG_INPUT_NREGS];
+uint16_t holding[100];
 
 /* ----------------------- Start implementation -----------------------------*/
 void setup_dir() {
 	// Configure PC2 as output
 	
 	DDRC |= (1 << DIR_PIN);
+    DDRC &= ~(1<< DDC0);
+    //PORTC |= (1<<PC0);
 }
 
 void set_direction(int dir) {
@@ -91,7 +94,8 @@ main( void )
     {
         (void) eMBPoll(  );
         /* Here we simply count the number of poll cycles. */
-        usRegInputBuf[0]++;
+        
+                
     }
 }
 
@@ -124,7 +128,7 @@ eMBRegInputCB( UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs )
     return eStatus;
 }
 
-uint16_t holding[100];
+
 
 eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNRegs, eMBRegisterMode eMode) {
 	uint16_t i;
