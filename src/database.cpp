@@ -40,14 +40,6 @@ void ChessRobotDatabase::createDatabase()
                   "FOREIGN KEY (game_id) REFERENCES game(game_id)"
                   ")");
 
-    // Create the motordata table if it doesn't exist
-    stmt->execute("CREATE TABLE IF NOT EXISTS motordata ("
-                  "motordata_id INT AUTO_INCREMENT PRIMARY KEY,"
-                  "ampUsage DOUBLE,"
-                  "move_id INT,"
-                  "FOREIGN KEY (move_id) REFERENCES moves(move_id)"
-                  ")");
-
     // Create the win table if it doesn't exist
     stmt->execute("CREATE TABLE IF NOT EXISTS win ("
                   "game_id INT,"
@@ -147,26 +139,4 @@ void ChessRobotDatabase::win(const std::string &whoWon)
         std::cerr << "SQL error: " << e.what() << std::endl;
         std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
     }
-}
-
-void ChessRobotDatabase::insertMotorData(double ampUsage)
-{
-    try
-    {
-        // Create a SQL query to insert the ampUsage into the motordata table
-        std::stringstream ss;
-        ss << "INSERT INTO motordata (ampUsage, move_id) VALUES (" << ampUsage << ", " << game_id << ")";
-
-        // Execute the SQL query
-        stmt->execute(ss.str());
-    }
-    catch (sql::SQLException &e)
-    {
-        std::cerr << "SQL error: " << e.what() << std::endl;
-        std::cerr << "MySQL error code: " << e.getErrorCode() << std::endl;
-    }
-}
-
-void ChessRobotDatabase::printGame_id(){
-    std::cout << game_id << std::endl;
 }

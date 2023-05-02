@@ -57,9 +57,10 @@ void Chess::urMove(std::string nextEngineMove)
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,1);
-        sleep(1);
+        while (at.read(1000)==1)
+        {
+        }
         
-        //at.readWhenChanged(1000);
         ur.makeMove(coordArray[0], coordArray[1], 1); // input first 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
@@ -67,13 +68,12 @@ void Chess::urMove(std::string nextEngineMove)
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,2);
-        sleep(1);
         
-        //at.readWhenChanged(1000);
+        while(at.read(1000)==2){}
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(9, 9, 2); // input default pos
-        assert(ur.readWhenChanged(128) == 0);
+        assert(ur.readWhenChanged(128) == 0); 
 }
 
 int * Chess::parseMove(std::string move){
@@ -90,6 +90,7 @@ int * Chess::parseMove(std::string move){
 
 void Chess::getUserMove(){
     cam.takePictureAfterRobot();
+    std::cout << "Ready"<< std::endl;
     at.write(1001,1);
     while(at.read(1001)==1){
         sleep(1);

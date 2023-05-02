@@ -33,8 +33,6 @@ public:
     void newGame(const std::string &playerName);
     void insertMove(const std::string &move, bool turn, bool isKill);
     void win(const std::string &whoWon);
-    void insertMotorData(double ampUsage);
-    void printGame_id();
     ~ChessRobotDatabase()
     {
         delete stmt;
