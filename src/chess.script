@@ -6,7 +6,6 @@ def chess():
     xslutx=0.366
     xsluty=-0.567
     z = [0.185, 0.310,0.400]
-    killedPieces = 0
     while True:
         while read_port_register(128) != 1:
             sleep(1)

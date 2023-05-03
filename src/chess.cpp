@@ -21,7 +21,6 @@ void Chess::urMove(std::string nextEngineMove)
     int *coordArray = parseMove(nextEngineMove);
     bool kill;
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
-    ur.write(128,1);
     sf.makeMove(nextEngineMove);
 
     // Insert black move into db
@@ -35,23 +34,18 @@ void Chess::urMove(std::string nextEngineMove)
         ur.makeMove(coordArray[2], coordArray[3], 0); // input last 2 from array and z=0
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,1);
-        
-        sleep(1);
+        while (at.read(1000)==1)
+        {
+        }
         ur.makeMove(coordArray[2], coordArray[3], 1); // input last 2 from array and z=1
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(10, 10, 1); // input pile pos and z=1
         assert(ur.readWhenChanged(128) == 0);
         at.write(1000,2);
-        
-        sleep(1);
-        ur.makeMove(10, 10, 1); // input pile pos and z=1
-        assert(ur.readWhenChanged(128) == 0);
-        
+        while (at.read(1000)==2)
+        {
+        }
     }
-        cout << coordArray[0] << endl;
-        cout << coordArray[1] << endl;
-        cout << coordArray[2] << endl;
-        cout << coordArray[3] << endl;
         ur.makeMove(coordArray[0], coordArray[1], 1); // same input but z=0
         assert(ur.readWhenChanged(128) == 0);
         ur.makeMove(coordArray[0], coordArray[1], 0); // same input but z=0

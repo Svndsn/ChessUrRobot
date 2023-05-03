@@ -23,8 +23,7 @@ void ping2(Modbus *ur){
     }
 }
 int main()
-{   
-
+{
     Modbus *ur = new Modbus("192.168.100.11");
     Modbus *at = new Modbus("/dev/ttyUSB0",10);
     thread pingThread(ping,ur);
@@ -43,9 +42,10 @@ int main()
         Chess game("../Stockfish-master/src/stockfish", ur,at,db,name,cam);
     #endif
     
-    while (1)
+    while (!game.isGameOver())
     {
         game.getUserMove();
     }
+    return 0;
 }
   

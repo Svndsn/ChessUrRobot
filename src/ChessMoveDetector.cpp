@@ -6,25 +6,13 @@
 #include <opencv2/opencv.hpp>
 using namespace cv;
 
-
-
-
-
-ChessMoveDetector::ChessMoveDetector(int _x, int _y, int _width, int _height) : x(_x), y(_y), width(_width), height(_height){
-
-    baseImage = takePicture();
-    std::cout << baseImage.size() << std::endl;
+ChessMoveDetector::ChessMoveDetector(int _x, int _y, int _width, int _height) : x(_x), y(_y), width(_width), height(_height)
+{
     roi = Rect(x, y, width, height); 
-    baseImage = baseImage(roi); 
-    rotate(baseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE); //ÆNDR ROTATION HER
-    //showGrid(baseImage);
-    //imshow("baseImage", baseImage);
-    //waitKey(0);
-    //destroyAllWindows();
 }
 
-Mat ChessMoveDetector::fen2Matrix(std::string fen){
-
+Mat ChessMoveDetector::fen2Matrix(std::string fen)
+{
     Mat matrix = cv::Mat::zeros(8, 8, CV_8UC1);
     std::string pieces = fen.substr(0, fen.find(' '));
     int row = 0;
@@ -146,9 +134,6 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
         rectangle(image1, largestContourRect2, Scalar(0, 0, 255), 2);
     }
 
-    //imshow("Differences", image1);
-    //waitKey(0);
-
     cv::Size2f dimensions = image1.size();    
 
     cv::Point diff1pos, diff2pos;
@@ -164,10 +149,6 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
     cv::rectangle(image1, cv::Rect(0, dimensions.width, dimensions.height / 8, dimensions.height / 8), cv::Scalar(0, 255, 255), 2);
 
     std::vector<Point> positions = {diff1pos, diff2pos};
-    
-    //imshow("Result", image1);
-    //waitKey(0);
-    //destroyAllWindows(); 
     
     std::map<int, std::string> chessConversions_back = {{0, "a"}, {1, "b"}, {2, "c"}, {3, "d"}, {4, "e"}, {5, "f"}, {6, "g"}, {7, "h"}};
     std::string from_square = "";
@@ -185,8 +166,5 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
         } 
         
     }
-    baseImage = image2;
-    //if((from_square + to_square).size() < 4){ return "None";} //Error handling?
     return from_square + to_square;
 }
-   
