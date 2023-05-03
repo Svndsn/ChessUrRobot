@@ -72,6 +72,42 @@ void setup_pwm() {
 	ICR1 = 0xFFFF;
 }
 
+void init_adc() {
+  // Set the voltage reference to AVCC
+  ADMUX &= ~(1 << REFS0);
+  ADMUX &= ~(1 << REFS1);
+
+  // Set the ADC clock prescaler to 128
+  ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+
+  // Enable the ADC
+  ADCSRA |= (1 << ADEN);
+}
+
+uint16_t read_adc() {
+  // Set the ADC channel
+  
+  ADMUX |= (1<<ADLAR);
+
+  // Start the conversion
+  ADCSRA |= (1 << ADSC);
+
+  // Wait for the conversion to complete
+  while (ADCSRA & (1 << ADSC));
+
+  // Return the result
+  return ADCH;
+}
+
+float convert_to_current(uint16_t digital_value) {
+  // Calculate the voltage from the digital value
+  float voltage = digital_value/1024.0*5.0;
+
+  // Calculate the current from the voltage
+  float current = (voltage - 2.5) / 2.5;
+
+  return current;
+}
 
 
 int
@@ -79,9 +115,12 @@ main( void )
 {
 	setup_pwm();
 	setup_dir();
+    init_adc();
+    DDRB &= ~(1<<DDB7);
+    PORTB |= (1<<PB7);
+    DDRB |= (1<<PB1);
+    
 
-    //setup_pwm();
-	//setup_dir();
     eMBErrorCode    eStatus;
 
     eStatus = eMBInit( MB_RTU, 0x0A, 0, 38400, MB_PAR_NONE );
@@ -94,8 +133,27 @@ main( void )
     {
         (void) eMBPoll(  );
         /* Here we simply count the number of poll cycles. */
-        
-                
+        if(!(PINB & (1<<PINB7))){
+            holding[2]=0;
+            PORTB|=(1<<PB1);
+            _delay_ms(200);
+            PORTB&= ~(1<<PB1);
+            
+            
+        }
+
+        if(holding[1]==1){
+				
+                grip();
+                holding[1]=0;
+
+			}else if (holding[1]==2)
+			{
+				ungrip();
+                holding[1]=0;
+
+			}
+
     }
 }
 
@@ -146,17 +204,7 @@ eMBErrorCode eMBRegHoldingCB(UCHAR * pucRegBuffer, USHORT usAddress, USHORT usNR
 
 			holding[i + usAddress] = (pucRegBuffer[i * 2 + 0] << 8) | pucRegBuffer[i * 2 + 1];
             
-			if(holding[1]==1){
-				
-                grip();
-                holding[1]=0;
-
-			}else if (holding[1]==2)
-			{
-				ungrip();
-                holding[1]=0;
-
-			}
+			
 			
 
 		}
@@ -184,7 +232,11 @@ void grip(){
     // Move the motor forward for 4 seconds
 	set_direction(1);
 	OCR1A = 0xFFFF; //25% Hastighed
-	_delay_ms(500);// Hvor lang tid den kører
+    _delay_ms(500);
+	//while(convert_to_current(read_adc())<0.02){
+        
+    //}
+    //_delay_ms(500);
 	OCR1A = 0x00; //0% Hastighed
 	
 }
