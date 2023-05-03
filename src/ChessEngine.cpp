@@ -106,7 +106,7 @@ void ChessEngine::sendCommand(string command)
 
 string ChessEngine::readResponse()
 {
-    char buffer[4096] = {0};
+    char buffer[8192] = {0};
     int resp_len = read(engineProcess->outfd, buffer, sizeof(buffer));
     string response(buffer, resp_len);
     //cout << "received response: " << response << endl;

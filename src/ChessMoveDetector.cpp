@@ -23,18 +23,6 @@ ChessMoveDetector::ChessMoveDetector(int _x, int _y, int _width, int _height) : 
     //destroyAllWindows();
 }
 
-
-void ChessMoveDetector::showGrid(Mat image1){ 
-
-        int grid_size = int(image1.size().width/8);
-        for(int i = 0; i < 8; i++){
-            for(int j= 0; j < 8; j++){
-                cv::rectangle(image1, cv::Rect(i * grid_size, j * grid_size, grid_size, grid_size), (0, 255, 0), 2);
-            }
-        }
-            
-}
-
 Mat ChessMoveDetector::fen2Matrix(std::string fen){
 
     Mat matrix = cv::Mat::zeros(8, 8, CV_8UC1);
@@ -79,7 +67,7 @@ bool ChessMoveDetector::fen2turn(std::string fen){
 }
 
 Mat ChessMoveDetector::takePicture(){
-    VideoCapture cam(4, CAP_V4L2);
+    VideoCapture cam(5, CAP_V4L2);
     
     Mat image;
     bool ret = cam.read(image);
@@ -87,27 +75,18 @@ Mat ChessMoveDetector::takePicture(){
 
     return image;
 }
-  
 
+void ChessMoveDetector::takePictureAfterRobot() {
+    baseImage = takePicture();
+    Mat croppedBaseImage = baseImage(roi);
+    rotate(croppedBaseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE);
+}
 
 std::string ChessMoveDetector::detectMove(std::string fen) {
     
     
     Mat board_mat = fen2Matrix(fen);
     bool isWhite = fen2turn(fen);
-
-    //test billeder
-    //Mat image1 = imread("chessboard0.jpg");
-    //Mat image2 = imread("chessboard1.jpg");
-
-    //Tid til at rykke brikker, mens der testes
-    baseImage = takePicture();
-    Mat croppedBaseImage = baseImage(roi);
-    rotate(croppedBaseImage, baseImage, ROTATE_90_COUNTERCLOCKWISE);
-    std::string ready;
-    std::cout << "Ready?" << std::endl;
-    std::cin >> ready;
-    std::cout << "Running" << std::endl;
 
     //Running
     Mat image1 = baseImage;
@@ -179,7 +158,6 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
     diff2pos.y = ((largestContourRect2.y + (largestContourRect2.height / 2)) / dimensions.width) * 8;
 
 
-    showGrid(image1);
     cv::rectangle(image1, cv::Rect(diff1pos.x * (dimensions.height / 8), diff1pos.y * (dimensions.height / 8), dimensions.height / 8, dimensions.height / 8), cv::Scalar(255, 0, 0), 2);
     cv::rectangle(image1, cv::Rect(diff2pos.x * (dimensions.height / 8), diff2pos.y * (dimensions.height / 8), dimensions.height / 8, dimensions.height / 8), cv::Scalar(255, 0, 0), 2);
     cv::rectangle(image1, cv::Rect(0, 0, dimensions.height / 8, dimensions.height / 8), cv::Scalar(255, 255, 255), 2);
@@ -187,9 +165,9 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
 
     std::vector<Point> positions = {diff1pos, diff2pos};
     
-    imshow("Result", image1);
-    waitKey(0);
-    destroyAllWindows();
+    //imshow("Result", image1);
+    //waitKey(0);
+    //destroyAllWindows(); 
     
     std::map<int, std::string> chessConversions_back = {{0, "a"}, {1, "b"}, {2, "c"}, {3, "d"}, {4, "e"}, {5, "f"}, {6, "g"}, {7, "h"}};
     std::string from_square = "";
@@ -211,3 +189,4 @@ std::string ChessMoveDetector::detectMove(std::string fen) {
     //if((from_square + to_square).size() < 4){ return "None";} //Error handling?
     return from_square + to_square;
 }
+   

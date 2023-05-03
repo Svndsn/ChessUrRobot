@@ -10,20 +10,14 @@ private:
     Mat baseImage;
     int x, y, width, height;
     Rect roi;
-    
-public:
-    ChessMoveDetector(int _x, int _y, int _width, int _height);
-    
-    std::string detectMove(std::string fen);
-
     Mat takePicture();
-
     Mat fen2Matrix(std::string fen);
     bool fen2turn(std::string fen);
 
-    void showGrid(Mat image1);
-    
-
+public:
+    ChessMoveDetector(int _x, int _y, int _width, int _height);
+    void takePictureAfterRobot();
+    std::string detectMove(std::string fen);
 };
 
 
