@@ -31,7 +31,7 @@ private:
 public:
     ChessRobotDatabase(const std::string &username, const std::string &password);
     void newGame(const std::string &playerName);
-    void insertMove(const std::string &move, bool turn, bool isKill);
+    void insertMove(const std::string &move, const std::string &FEN, bool turn, bool isKill);
     void win(const std::string &whoWon);
     ~ChessRobotDatabase()
     {

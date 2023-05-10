@@ -24,7 +24,7 @@ void Chess::urMove(std::string nextEngineMove)
     sf.makeMove(nextEngineMove);
 
     // Insert black move into db
-    db.insertMove(nextEngineMove,0,kill);
+    db.insertMove(nextEngineMove,sf.getFen(),0,kill);
     
 
     if (kill)
@@ -100,7 +100,7 @@ void Chess::userMove(std::string move){
     kill = moveIsKill(sf.getFen(), coordArray[2], coordArray[3]);
     std::string nextEngineMove = sf.sendUserMove(move);
     // Insert white move into db
-    db.insertMove(move,1,kill);
+    db.insertMove(move,sf.getFen(),1,kill);
     urMove(nextEngineMove);
 }
  

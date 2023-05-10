@@ -35,6 +35,7 @@ void ChessRobotDatabase::createDatabase()
                   "move_id INT AUTO_INCREMENT PRIMARY KEY,"
                   "game_id INT,"
                   "move VARCHAR(10),"
+                  "FEN VARCHAR(50),"
                   "turn BOOL,"
                   "isKill BOOL,"
                   "FOREIGN KEY (game_id) REFERENCES game(game_id)"
@@ -105,14 +106,14 @@ void ChessRobotDatabase::getGameIdFromDatabase()
     }
 }
 
-void ChessRobotDatabase::insertMove(const std::string &move, bool turn, bool isKill)
+void ChessRobotDatabase::insertMove(const std::string &move, const std::string &FEN, bool turn, bool isKill)
 {
     try
     {
         // Create a SQL query to insert the new move into the moves table
         std::stringstream ss;
-        ss << "INSERT INTO moves (game_id, move, turn, isKill) VALUES (" << game_id << ", '"
-           << move << "', " << turn << ", " << isKill << ")";
+        ss << "INSERT INTO moves (game_id, move, FEN, turn, isKill) VALUES (" << game_id << ", '"
+           << move << "', " << FEN << ", " << turn << ", " << isKill << ")";
 
         // Execute the SQL query
         stmt->execute(ss.str());
