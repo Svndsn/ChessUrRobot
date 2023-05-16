@@ -44,7 +44,7 @@ void ChessRobotDatabase::createDatabase()
     // Create the win table if it doesn't exist
     stmt->execute("CREATE TABLE IF NOT EXISTS win ("
                   "game_id INT,"
-                  "whoWon ENUM('black', 'white', 'draw'),"
+                  "whoWon ENUM('0', '1', '-'),"
                   "PRIMARY KEY (game_id, whoWon),"
                   "FOREIGN KEY (game_id) REFERENCES game(game_id)"
                   ")");

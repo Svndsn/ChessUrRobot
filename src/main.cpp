@@ -46,6 +46,11 @@ int main()
     {
         game.getUserMove();
     }
+    string whoWon;
+    cout << "Who won?" << endl;
+    cout << "'1' = White, '0' = Black, '-' = Draw" << endl;
+    getline(cin,whoWon);
+    db->win(whoWon);
     return 0;
 }
   
